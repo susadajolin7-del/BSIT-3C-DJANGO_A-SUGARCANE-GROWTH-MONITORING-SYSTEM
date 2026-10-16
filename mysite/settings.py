@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bsitcrud',
+        'NAME': 'sugarcane_monitoring',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
