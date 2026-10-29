@@ -1,0 +1,46 @@
+
+{% extends "theme/base.html" %}
+
+{% block content %}
+<div class="sg-page-header">
+    <h1>Harvest Records</h1>
+    <p>Tingnan ang mga tala ng pag-aani ng tubo.</p>
+</div>
+
+<div class="sg-card">
+    <h2>Harvest Records List</h2>
+
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th style="padding: 12px; text-align: left;">Harvest ID</th>
+                    <th style="padding: 12px; text-align: left;">Crop ID</th>
+                    <th style="padding: 12px; text-align: left;">Harvest Date</th>
+                    <th style="padding: 12px; text-align: left;">Quantity (Tons)</th>
+                    <th style="padding: 12px; text-align: left;">Quality Grade</th>
+                    <th style="padding: 12px; text-align: left;">Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in harvest_records %}
+                <tr>
+                    <td style="padding: 12px;">{{ record.harvest_id }}</td>
+                    <td style="padding: 12px;">{{ record.crop_id }}</td>
+                    <td style="padding: 12px;">{{ record.harvest_date|date:"M d, Y" }}</td>
+                    <td style="padding: 12px;">{{ record.quantity_tons|default:"—" }}</td>
+                    <td style="padding: 12px;">{{ record.quality_grade|default:"—" }}</td>
+                    <td style="padding: 12px;">{{ record.notes|default:"—" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="padding: 12px; text-align: center;">
+                        Wala pang harvest records.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

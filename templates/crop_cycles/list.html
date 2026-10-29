@@ -1,0 +1,58 @@
+
+{% extends "theme/base.html" %}
+
+{% block content %}
+<div class="sg-page-header">
+    <h1>Crop Cycles</h1>
+    <p>View and monitor sugarcane planting cycles and harvest predictions.</p>
+</div>
+
+<div class="sg-card">
+    <h2>Crop Cycles List</h2>
+
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th style="padding: 12px; text-align: left;">Crop ID</th>
+                    <th style="padding: 12px; text-align: left;">Field ID</th>
+                    <th style="padding: 12px; text-align: left;">Variety</th>
+                    <th style="padding: 12px; text-align: left;">Planting Date</th>
+                    <th style="padding: 12px; text-align: left;">Expected Harvest Date</th>
+                    <th style="padding: 12px; text-align: left;">Predicted Harvest Date</th>
+                    <th style="padding: 12px; text-align: left;">Crop Status</th>
+                    <th style="padding: 12px; text-align: left;">Prediction Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for crop in crop_cycles %}
+                <tr>
+                    <td style="padding: 12px;">{{ crop.crop_id }}</td>
+                    <td style="padding: 12px;">{{ crop.field_id }}</td>
+                    <td style="padding: 12px;">{{ crop.variety|default:"—" }}</td>
+                    <td style="padding: 12px;">{{ crop.planting_date|date:"M d, Y" }}</td>
+                    <td style="padding: 12px;">
+                        {{ crop.expected_harvest_date|date:"M d, Y"|default:"—" }}
+                    </td>
+                    <td style="padding: 12px;">
+                        {{ crop.predicted_harvest_date|date:"M d, Y"|default:"—" }}
+                    </td>
+                    <td style="padding: 12px;">{{ crop.status|default:"—" }}</td>
+                    <td style="padding: 12px;">
+                        <span style="font-weight: bold;">
+                            {{ crop.prediction_status }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" style="padding: 12px; text-align: center;">
+                        No crop cycle records found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

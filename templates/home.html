@@ -1,26 +1,349 @@
-{% extends "theme/base.html" %}
-{% block content %}
-<div class="container-xl">
-  <div class="page-header d-print-none" aria-label="Page header">
-    <div class="container-xl">
-      <div class="row align-items-center">
-        <div class="col">
-          <div class="page-pretitle">Overview</div>
-          <div class="d-flex align-items-center gap-3 flex-wrap d-none d-md-flex">
-            <h2 class="page-title mb-0">Dashboard</h2>
-          </div>
-          <h2 class="page-title mb-0 d-md-none">Dashboard</h2>
-        </div>
-      </div>
-    </div>
-  </div>
-  <br>
 
-  <div class="card">
-    <div class="card-body text-muted">
-      Dashboard
+{% extends "theme/base.html" %}
+{% load static %}
+
+{% block content %}
+
+ 
+<div class="sg-dashboard">
+
+    <!-- HEADER -->
+    <div class="sg-heading">
+        <div>
+            <span class="sg-eyebrow">SUGARCANE GROWTH MONITORING</span>
+            <h1>Dashboard</h1>
+            <p>Monitor your sugarcane growth and field performance.</p>
+        </div>
+        <span class="sg-date" id="sgToday"></span>
     </div>
-  </div>
+
+    <!-- SUMMARY CARDS -->
+    <section class="sg-summary">
+
+        <article class="sg-card sg-summary-card">
+            <div>
+                <span class="sg-label">Total Fields</span>
+            <h2 id="totalFields">2</h2>
+                <small>Registered fields</small>
+            </div>
+            <div class="sg-icon">🌱</div>
+        </article>
+
+        <article class="sg-card sg-summary-card">
+            <div>
+                <span class="sg-label">Active Varieties</span>
+                <h2 id="activeVarieties">{{ total_crop_cycles }}</h2>
+                <small>Sugarcane varieties</small>
+            </div>
+            <div class="sg-icon">🌿</div>
+        </article>
+
+        <article class="sg-card sg-summary-card">
+            <div>
+                <span class="sg-label">Growth Records</span>
+                <h2 id="growthRecords"> 3
+                <small>Total measurements</small>
+            </div>
+            <div class="sg-icon">📊</div>
+        </article>
+
+        <article class="sg-card sg-summary-card">
+            <div>
+                <span class="sg-label">Average Height</span>
+                <h2>78.5 <span class="sg-unit">cm</span></h2>
+                <small>Average plant height</small>
+            </div>
+            <div class="sg-icon">📈</div>
+        </article>
+
+    </section>
+
+    <!-- CHARTS -->
+    <section class="sg-chart-grid">
+
+        <article class="sg-card sg-chart-card">
+            <div class="sg-card-heading">
+                <div>
+                    <h3>Growth Trend</h3>
+                    <p>Height vs. Time</p>
+                </div>
+                <span class="sg-badge">Growth</span>
+            </div>
+
+            <div class="sg-chart-area">
+                <canvas id="sgGrowthChart"></canvas>
+            </div>
+        </article>
+
+        <article class="sg-card sg-chart-card">
+            <div class="sg-card-heading">
+                <div>
+                    <h3>Variety Growth Comparison</h3>
+                    <p>Average height by variety</p>
+                </div>
+            </div>
+
+            <div class="sg-chart-area">
+                <canvas id="sgVarietyChart"></canvas>
+            </div>
+        </article>
+
+        <article class="sg-card sg-chart-card sg-rate-card">
+            <div class="sg-card-heading">
+                <div>
+                    <h3>Growth Rate</h3>
+                    <p>Average daily growth</p>
+                </div>
+            </div>
+
+            <div class="sg-rate-chart">
+                <canvas id="sgRateChart"></canvas>
+                <div class="sg-rate-center">
+                    <strong>1.8</strong>
+                    <span>cm/day</span>
+                </div>
+            </div>
+
+            <p class="sg-rate-note">Average growth per day</p>
+        </article>
+
+    </section>
+
+    <!-- TABLE 1: FIELDS -->
+    <section class="sg-card" style="margin-bottom:20px">
+        <div class="sg-card-heading">
+            <div>
+                <h3>Table 1 — Sugarcane Fields</h3>
+                <p>Field monitoring overview</p>
+            </div>
+        </div>
+
+        <div class="sg-table-wrapper">
+            <table class="sg-table">
+                <thead>
+                    <tr>
+                        <th>Field ID</th>
+                        <th>Field Name</th>
+                        <th>Location</th>
+                        <th>Area (ha)</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>F001</td>
+                        <td>Field A</td>
+                        <td>Farm Area A</td>
+                        <td>2.5</td>
+                        <td><span class="sg-status-pill">Active</span></td>
+                    </tr>
+                    <tr>
+                        <td>F002</td>
+                        <td>Field B</td>
+                        <td>Farm Area B</td>
+                        <td>1.8</td>
+                        <td><span class="sg-status-pill">Active</span></td>
+                    </tr>
+                    <tr>
+                        <td>F003</td>
+                        <td>Field C</td>
+                        <td>Farm Area C</td>
+                        <td>3.0</td>
+                        <td><span class="sg-warning-pill">Monitoring</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- TABLE 2: VARIETIES -->
+    <section class="sg-card" style="margin-bottom:20px">
+        <div class="sg-card-heading">
+            <div>
+                <h3>Table 2 — Sugarcane Varieties</h3>
+                <p>Registered varieties</p>
+            </div>
+        </div>
+
+        <div class="sg-table-wrapper">
+            <table class="sg-table">
+                <thead>
+                    <tr>
+                        <th>Variety ID</th>
+                        <th>Variety Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>V001</td>
+                        <td>Variety A</td>
+                        <td>Registered sugarcane variety</td>
+                        <td><span class="sg-status-pill">Active</span></td>
+                    </tr>
+                    <tr>
+                        <td>V002</td>
+                        <td>Variety B</td>
+                        <td>Registered sugarcane variety</td>
+                        <td><span class="sg-status-pill">Active</span></td>
+                    </tr>
+                    <tr>
+                        <td>V003</td>
+                        <td>Variety C</td>
+                        <td>Registered sugarcane variety</td>
+                        <td><span class="sg-status-pill">Active</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- TABLE 3: GROWTH RECORDS -->
+    <section class="sg-card" style="margin-bottom:20px">
+        <div class="sg-card-heading">
+            <div>
+                <h3>Table 3 — Growth Records</h3>
+                <p>Recent plant measurements</p>
+            </div>
+        </div>
+
+        <div class="sg-table-wrapper">
+            <table class="sg-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Variety</th>
+                        <th>Field</th>
+                        <th>Height (cm)</th>
+                        <th>Leaf Count</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Oct 28, 2026</td>
+                        <td>Variety A</td>
+                        <td>Field A</td>
+                        <td>78</td>
+                        <td>10</td>
+                        <td><span class="sg-status-pill">Healthy</span></td>
+                    </tr>
+                    <tr>
+                        <td>Oct 27, 2026</td>
+                        <td>Variety B</td>
+                        <td>Field B</td>
+                        <td>72</td>
+                        <td>9</td>
+                        <td><span class="sg-status-pill">Healthy</span></td>
+                    </tr>
+                    <tr>
+                        <td>Oct 26, 2026</td>
+                        <td>Variety C</td>
+                        <td>Field C</td>
+                        <td>65</td>
+                        <td>7</td>
+                        <td><span class="sg-warning-pill">Inspect</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- TABLE 4: FIELD CONDITIONS -->
+    <section class="sg-card" style="margin-bottom:20px">
+        <div class="sg-card-heading">
+            <div>
+                <h3>Table 4 — Field Conditions</h3>
+                <p>Current field condition overview</p>
+            </div>
+        </div>
+
+        <div class="sg-table-wrapper">
+            <table class="sg-table">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Condition</th>
+                        <th>Growth Progress</th>
+                        <th>Recommendation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Field A</td>
+                        <td><span class="sg-status-pill">Good</span></td>
+                        <td>80%</td>
+                        <td>Continue monitoring</td>
+                    </tr>
+                    <tr>
+                        <td>Field B</td>
+                        <td><span class="sg-warning-pill">Needs checking</span></td>
+                        <td>55%</td>
+                        <td>Check water requirements</td>
+                    </tr>
+                    <tr>
+                        <td>Field C</td>
+                        <td><span class="sg-status-pill">Fair</span></td>
+                        <td>65%</td>
+                        <td>Monitor plant growth</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- TABLE 5: MONITORING SUMMARY -->
+    <section class="sg-card" style="margin-bottom:20px">
+        <div class="sg-card-heading">
+            <div>
+                <h3>Table 5 — Monitoring Summary</h3>
+                <p>Summary of recent monitoring activities</p>
+            </div>
+        </div>
+
+        <div class="sg-table-wrapper">
+            <table class="sg-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Field</th>
+                        <th>Activity</th>
+                        <th>Result</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Oct 28, 2026</td>
+                        <td>Field A</td>
+                        <td>Plant height measurement</td>
+                        <td>78 cm</td>
+                        <td><span class="sg-status-pill">Complete</span></td>
+                    </tr>
+                    <tr>
+                        <td>Oct 27, 2026</td>
+                        <td>Field B</td>
+                        <td>Growth inspection</td>
+                        <td>72 cm</td>
+                        <td><span class="sg-status-pill">Complete</span></td>
+                    </tr>
+                    <tr>
+                        <td>Oct 26, 2026</td>
+                        <td>Field C</td>
+                        <td>Field inspection</td>
+                        <td>Needs follow-up</td>
+                        <td><span class="sg-warning-pill">Pending</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!--script src="{% static 'js/sugarcane-dashboard.js' %}"></script>
+
 {% endblock %}
+```

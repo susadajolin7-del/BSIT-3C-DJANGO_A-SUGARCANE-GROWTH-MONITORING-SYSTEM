@@ -37,10 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    
 
     'apps.core',
     'apps.users',
     'apps.info',
+    'monitoring',
 ]
 
 MIDDLEWARE = [
@@ -79,7 +82,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sugarcane_monitoring',
+        'NAME': 'sugarcane_growth_monitoring',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

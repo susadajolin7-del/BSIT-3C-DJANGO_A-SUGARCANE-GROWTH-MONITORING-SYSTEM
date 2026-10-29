@@ -1,0 +1,46 @@
+
+{% extends "theme/base.html" %}
+
+{% block content %}
+<div class="sg-page-header">
+    <h1>Sugarcane Fields</h1>
+    <p>View the registered sugarcane fields and their details.</p>
+</div>
+
+<div class="sg-card">
+    <h2>Sugarcane Fields List</h2>
+
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th style="padding: 12px; text-align: left;">Field ID</th>
+                    <th style="padding: 12px; text-align: left;">Farmer ID</th>
+                    <th style="padding: 12px; text-align: left;">Field Name</th>
+                    <th style="padding: 12px; text-align: left;">Location</th>
+                    <th style="padding: 12px; text-align: left;">Area (Hectares)</th>
+                    <th style="padding: 12px; text-align: left;">Soil Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for field in fields %}
+                <tr>
+                    <td style="padding: 12px;">{{ field.field_id }}</td>
+                    <td style="padding: 12px;">{{ field.farmer_id }}</td>
+                    <td style="padding: 12px;">{{ field.field_name }}</td>
+                    <td style="padding: 12px;">{{ field.location|default:"—" }}</td>
+                    <td style="padding: 12px;">{{ field.area_hectares|default:"—" }}</td>
+                    <td style="padding: 12px;">{{ field.soil_type|default:"—" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="padding: 12px; text-align: center;">
+                        No sugarcane field records found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

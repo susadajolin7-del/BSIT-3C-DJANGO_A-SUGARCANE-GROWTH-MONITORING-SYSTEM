@@ -1,0 +1,46 @@
+
+{% extends "theme/base.html" %}
+
+{% block content %}
+<div class="sg-page-header">
+    <h1>Growth Records</h1>
+    <p>Monitor sugarcane growth measurements and observations.</p>
+</div>
+
+<div class="sg-card">
+    <h2>Growth Records List</h2>
+
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th style="padding: 12px; text-align: left;">Record ID</th>
+                    <th style="padding: 12px; text-align: left;">Crop ID</th>
+                    <th style="padding: 12px; text-align: left;">Record Date</th>
+                    <th style="padding: 12px; text-align: left;">Growth Height (cm)</th>
+                    <th style="padding: 12px; text-align: left;">Plant Weight (kg)</th>
+                    <th style="padding: 12px; text-align: left;">Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in growth_records %}
+                <tr>
+                    <td style="padding: 12px;">{{ record.record_id }}</td>
+                    <td style="padding: 12px;">{{ record.crop_id }}</td>
+                    <td style="padding: 12px;">{{ record.record_date|date:"M d, Y" }}</td>
+                    <td style="padding: 12px;">{{ record.growth_height_cm|default:"—" }}</td>
+                    <td style="padding: 12px;">{{ record.plant_weight_kg|default:"—" }}</td>
+                    <td style="padding: 12px;">{{ record.notes|default:"—" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="padding: 12px; text-align: center;">
+                        No growth records found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

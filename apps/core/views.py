@@ -9,7 +9,7 @@ from django.core.validators import validate_email
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
-
+from .models import Farmer, SugarcaneField, CropCycle, GrowthRecord, HarvestRecord
 User = get_user_model()
 
 MAX_FAILED_ATTEMPTS = 5
@@ -141,6 +141,12 @@ def logout_view(request):
 @login_required(login_url='login')
 def home(request):
     return render(request, 'home.html')
+@login_required(login_url='login')
+def farmers_list(request):
+    farmers = Farmer.objects.all()
+    return render(request, 'farmers/list.html', {
+        'farmers': farmers
+    })
 
 
 @require_http_methods(['GET', 'POST'])
@@ -173,3 +179,78 @@ def register_view(request):
     )
     login(request, user)
     return redirect('dashboard')
+
+@login_required(login_url='login')
+def fields_list(request):
+    fields = SugarcaneField.objects.all()
+    return render(request, 'fields/list.html', {
+        'fields': fields
+    })
+
+
+
+
+
+@login_required(login_url='login')
+def crop_cycles_list(request):
+    today = timezone.localdate()
+    crop_cycles = CropCycle.objects.all()
+
+    for crop in crop_cycles:
+        if crop.expected_harvest_date:
+            estimated_date = crop.expected_harvest_date
+        else:
+            estimated_date = crop.planting_date + timedelta(days=365)
+
+        crop.predicted_harvest_date = estimated_date
+
+        if crop.status == 'Harvested':
+            crop.prediction_status = 'Harvested'
+        elif today >= estimated_date:
+            crop.prediction_status = 'For Harvest Assessment'
+        else:
+            crop.prediction_status = 'Growing'
+
+    return render(request, 'crop_cycles/list.html', {
+        'crop_cycles': crop_cycles
+    })
+
+
+    for crop in crop_cycles:
+        if crop.expected_harvest_date:  estimated_date = crop.expected_harvest_date
+        else:
+            estimated_date = crop.planting_date + relativedelta(months=12)
+
+        if crop.status != 'Harvested':
+            if today < estimated_date:
+                crop.prediction_status = 'Growing'
+            else:
+                crop.prediction_status = 'For Harvest Assessment'
+
+        crop.predicted_harvest_date = estimated_date
+
+    return render(request, 'crop_cycles/list.html', {
+        'crop_cycles': crop_cycles
+    })
+
+          
+
+
+@login_required(login_url='login')
+def growth_records_list(request):
+    growth_records = GrowthRecord.objects.all().order_by('-record_date')
+
+    return render(request, 'growth_records/list.html', {
+        'growth_records': growth_records
+    })
+
+
+
+@login_required(login_url='login')
+def harvest_records_list(request):
+    harvest_records = HarvestRecord.objects.all().order_by('-harvest_date')
+
+    return render(request, 'harvest_records/list.html', {
+        'harvest_records': harvest_records
+    })
+

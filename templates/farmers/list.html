@@ -1,0 +1,45 @@
+
+{% extends "theme/base.html" %}
+
+{% block content %}
+<div class="sg-page-header">
+    <h1>Farmers</h1>
+    <p>Manage and view registered sugarcane farmers.</p>
+</div>
+
+<div class="sg-card">
+    <h2>Farmers List</h2>
+
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th style="padding: 12px; text-align: left;">Farmer ID</th>
+                    <th style="padding: 12px; text-align: left;">First Name</th>
+                    <th style="padding: 12px; text-align: left;">Last Name</th>
+                    <th style="padding: 12px; text-align: left;">Phone</th>
+                    <th style="padding: 12px; text-align: left;">Address</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for farmer in farmers %}
+                <tr>
+                    <td style="padding: 12px;">{{ farmer.farmer_id }}</td>
+                    <td style="padding: 12px;">{{ farmer.first_name }}</td>
+                    <td style="padding: 12px;">{{ farmer.last_name }}</td>
+                    <td style="padding: 12px;">{{ farmer.phone|default:"—" }}</td>
+                    <td style="padding: 12px;">{{ farmer.address|default:"—" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="padding: 12px; text-align: center;">
+                        No farmer records found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
