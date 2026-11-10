@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Registration</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5ee;
+            margin: 0;
+            padding: 30px 15px;
+        }
+
+        .register-container {
+            max-width: 450px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            text-align: center;
+            color: #276738;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 11px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 22px;
+            background: #276738;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-container">
+        <h2>Farmer Registration</h2>
+        <p>Create your farmer account</p>
+        {% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>First Name</label>
+            <input type="text" name="first_name" required>
+
+            <label>Last Name</label>
+            <input type="text" name="last_name" required>
+
+            <label>Phone Number</label>
+            <input type="text" name="phone">
+
+            <label>Address</label>
+            <input type="text" name="address">
+
+            <label>Username</label>
+            <input type="text" name="username" required>
+
+            <label>Password</label>
+            <input type="password" name="password1" required>
+
+            <label>Confirm Password</label>
+            <input type="password" name="password2" required>
+
+            <button type="submit">Create Account</button>
+        </form>
+    </div>
+</body>
+</html>

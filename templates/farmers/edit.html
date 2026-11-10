@@ -1,0 +1,57 @@
+
+{% extends "theme/base.html" %}
+
+{% block content %}
+<div class="farmers-page">
+
+    <div class="farmers-header">
+        <div>
+            <h1>Edit Farmer</h1>
+            <p>Update registered farmer information.</p>
+        </div>
+    </div>
+
+    <div class="farmers-card" style="padding:25px; max-width:700px;">
+        <h2>Farmer Information</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <p>
+                <label>First Name *</label>
+                <input type="text" name="first_name"
+                       value="{{ farmer.first_name }}" required
+                       style="width:100%; padding:12px;">
+            </p>
+
+            <p>
+                <label>Last Name *</label>
+                <input type="text" name="last_name"
+                       value="{{ farmer.last_name }}" required
+                       style="width:100%; padding:12px;">
+            </p>
+
+            <p>
+                <label>Phone</label>
+                <input type="text" name="phone"
+                       value="{{ farmer.phone|default:'' }}"
+                       style="width:100%; padding:12px;">
+            </p>
+
+            <p>
+                <label>Address</label>
+                <textarea name="address" rows="3"
+                          style="width:100%; padding:12px;">{{ farmer.address|default:'' }}</textarea>
+            </p>
+
+            <button type="submit"
+                    style="background:#198754; color:white; padding:12px 20px; border:0; border-radius:8px;">
+                Update Farmer
+            </button>
+
+            <a href="{% url 'farmers' %}">Cancel</a>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

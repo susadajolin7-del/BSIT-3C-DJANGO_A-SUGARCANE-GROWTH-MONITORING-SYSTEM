@@ -18,19 +18,44 @@
 
   <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2 mb-1">
     <form method="GET" class="w-100" style="max-width: 420px;">
-      <div class="input-group">
-        <span class="input-group-text"><i class="ti ti-search"></i></span>
-        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by name, address, or email...">
+      <div class="input-group"
+     style="border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(22, 101, 52, 0.08);">
+        <span class="input-group-text"
+      style="background-color: #dcfce7; border-color: #86efac;">
+    🔍
+</span>
+        <input type="text"
+       name="q"
+       value="{{ query }}"
+       class="form-control"
+       placeholder="Search by name, address, or email..."
+       style="border-color: #bbd7c3; padding: 12px 16px;">
         {% if query %}
         <a href="{% url 'info:info_list' %}" class="btn btn-outline-secondary">Clear</a>
         {% endif %}
-        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="submit"
+        class="btn"
+        style="background-color: #166534; color: white;">
+    Search
+</button> 
       </div>
     </form>
 
-    <button type="button" class="btn btn-primary mt-n4" data-bs-toggle="modal" data-bs-target="#infoModal" data-mode="create">
-      <i class='fas fa-plus-circle me-2'></i> Add Info
-    </button>
+    <button type="button"
+        class="btn"
+        style="background-color: #166534;
+       color: white;
+       padding: 12px 22px;
+       border-radius: 10px;
+       font-weight: 600;
+       box-shadow: 0 4px 10px rgba(22, 101, 52, 0.18);"
+        data-bs-toggle="modal"
+        data-bs-target="#infoModal"
+        data-mode="create">
+    ➕ Add Info
+</button>
   </div>
 
   <div class="toast-container position-fixed top-0 end-0 p-3" id="infoToastContainer" aria-live="polite" aria-atomic="true">
@@ -46,7 +71,14 @@
 
   <div id="infoAlert" class="alert alert-danger d-none" role="alert"></div>
 
-  <div class="card">
+  
+<div class="card"
+     style="border: 1px solid #d1e7d5;
+            border-radius: 16px;
+            overflow: hidden;
+            background-color: #ffffff;
+            box-shadow: 0 6px 20px rgba(22, 101, 52, 0.08);">
+
     <div class="card-header">
       <div class="card-title">
         All Records
@@ -57,32 +89,71 @@
     </div>
     <div class="table-responsive">
       <table class="table table-vcenter table-hover card-table text-nowrap" id="infoTable">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Age</th>
-            <th>Address</th>
-            <th>Email</th>
-            <th class="w-1">Actions</th>
-          </tr>
-        </thead>
+        
+<thead>
+    <tr style="background-color: #166534;">
+        <th style="background-color: #166534; color: white; padding: 16px;">#</th>
+        <th style="background-color: #166534; color: white; padding: 16px;">Name</th>
+        <th style="background-color: #166534; color: white; padding: 16px;">Age</th>
+        <th style="background-color: #166534; color: white; padding: 16px;">Address</th>
+        <th style="background-color: #166534; color: white; padding: 16px;">Email</th>
+        <th style="background-color: #166534; color: white; padding: 16px;">Actions</th>
+    </tr>
+</thead>
+
         <tbody id="infoTableBody">
         {% for info in infos %}
         <tr data-row-id="{{ info.id }}">
             <td class="text-muted">{{ forloop.counter0|add:infos.start_index }}</td>
             <td class="fw-semibold">{{ info.name }}</td>
-            <td><span class="badge bg-primary-lt text-primary">{{ info.age }}</span></td>
+            <td>
+    <span class="badge"
+          style="background-color: #dcfce7; color: #166534; padding: 7px 12px; border-radius: 6px;">
+        {{ info.age }}
+    </span>
+</td>
             <td class="text-muted">{{ info.address }}</td>
             <td class="text-muted">{{ info.email|default:"—" }}</td>
             <td>
               <div class="d-flex gap-1">
-                <button type="button" class="btn btn-ghost-secondary btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#infoModal" data-mode="edit" data-id="{{ info.id }}" data-name="{{ info.name }}" data-age="{{ info.age }}" data-address="{{ info.address }}" data-email="{{ info.email }}" title="Edit">
-                  <i class="fas fa-edit text-primary"></i>
-                </button>
-                <button type="button" class="btn btn-ghost-secondary btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#deleteInfoModal" data-id="{{ info.id }}" data-name="{{ info.name }}" title="Delete">
-                  <i class="fas fa-trash-alt text-danger"></i>
-                </button>
+                
+<button type="button"
+        class="btn btn-sm"
+        style="background-color: #dcfce7;
+               color: #166534;
+               border: 1px solid #86efac;
+               border-radius: 8px;
+               padding: 7px 12px;
+               font-weight: 600;"
+        data-bs-toggle="modal"
+        data-bs-target="#infoModal"
+        data-mode="edit"
+        data-id="{{ info.id }}"
+        data-name="{{ info.name }}"
+        data-age="{{ info.age }}"
+        data-address="{{ info.address }}"
+        data-email="{{ info.email }}"
+        title="Edit">
+    ✏️ Edit
+</button>
+
+                
+<button type="button"
+        class="btn btn-sm"
+        style="background-color: #fee2e2;
+               color: #b91c1c;
+               border: 1px solid #fecaca;
+               border-radius: 8px;
+               padding: 7px 12px;
+               font-weight: 600;"
+        data-bs-toggle="modal"
+        data-bs-target="#deleteInfoModal"
+        data-id="{{ info.id }}"
+        data-name="{{ info.name }}"
+        title="Delete">
+    🗑️ Delete
+</button>
+
               </div>
             </td>
         </tr>
@@ -143,11 +214,30 @@
 
 <div class="modal modal-blur fade" id="infoModal" tabindex="-1">
   <div class="modal-dialog modal-md modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="infoModalTitle">Add Info</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
+    
+<div class="modal-content"
+     style="border-radius: 16px;
+            border: 1px solid #d1e7d5;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(22, 101, 52, 0.15);">
+
+      
+<div class="modal-header"
+     style="background-color: #166534;
+            color: white;
+            padding: 18px 22px;">
+    <h5 class="modal-title"
+        id="infoModalTitle"
+        style="color: white; font-weight: 600;">
+        Add Info
+    </h5>
+    <button type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="modal"
+            aria-label="Close">
+    </button>
+</div>
+
       <form id="infoForm">
         {% csrf_token %}
         <input type="hidden" name="id" id="info_id">
@@ -174,7 +264,18 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-ghost-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="infoSubmitBtn">Save Info</button>
+          
+<button type="submit"
+        class="btn"
+        id="infoSubmitBtn"
+        style="background-color: #166534;
+               color: white;
+               padding: 10px 22px;
+               border-radius: 8px;
+               font-weight: 600;">
+    Save Info
+</button>
+
         </div>
       </form>
     </div>
@@ -189,7 +290,10 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete <strong id="deleteInfoName"></strong>?</p>
+        <p>
+    Are you sure you want to delete
+    <strong id="deleteInfoName" style="color: #dc2626;"></strong>?
+</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-ghost-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -252,11 +356,16 @@
 
   deleteModalEl.addEventListener('show.bs.modal', function(event) {
     const button = event.relatedTarget;
+
     if (button) {
-      currentInfoId = button.getAttribute('data-id');
-      deleteName.textContent = button.getAttribute('data-name');
+        currentInfoId = button.getAttribute('data-id');
+
+        const name = button.getAttribute('data-name');
+
+        document.getElementById('deleteInfoName').textContent =
+            name || 'this record';
     }
-  });
+});
 
   form.addEventListener('submit', function(e) {
     e.preventDefault();

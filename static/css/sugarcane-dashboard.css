@@ -253,3 +253,687 @@ body {
         overflow-x: auto;
     }
 }
+
+
+/* ORGANIZED DASHBOARD LAYOUT */
+
+/* Dashboard cards container */
+.dashboard-cards,
+.stats-grid,
+.metrics-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+/* Individual cards */
+.dashboard-cards > *,
+.stats-grid > *,
+.metrics-grid > * {
+    min-width: 0;
+    background: #ffffff;
+    border: 1px solid #e0e9e2;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+    .dashboard-cards,
+    .stats-grid,
+    .metrics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .dashboard-cards,
+    .stats-grid,
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* FIX DASHBOARD CARD ALIGNMENT */
+
+.sg-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+}
+
+.sg-dashboard-grid > * {
+    min-width: 0;
+}
+
+.sg-dashboard-grid .sg-card,
+.sg-dashboard-grid .stat-card,
+.sg-dashboard-grid .dashboard-card {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+@media (max-width: 1200px) {
+    .sg-dashboard-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .sg-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* FIX: SUGARCANE DASHBOARD LAYOUT */
+
+/* Four summary cards in one row */
+.sg-summary {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    margin: 24px 0;
+}
+
+.sg-summary-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 0;
+    min-height: 145px;
+}
+
+.sg-summary-card h2 {
+    font-size: 30px;
+    margin: 10px 0;
+    color: #14532d;
+}
+
+.sg-label {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.sg-icon {
+    font-size: 30px;
+}
+
+/* Three charts side by side */
+.sg-chart-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.sg-chart-card {
+    min-width: 0;
+}
+
+.sg-chart-area {
+    position: relative;
+    height: 250px;
+}
+
+.sg-rate-chart {
+    position: relative;
+    height: 220px;
+}
+
+.sg-rate-center {
+    text-align: center;
+}
+
+/* Table formatting */
+.sg-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.sg-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Tablet */
+@media (max-width: 1200px) {
+    .sg-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sg-chart-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .sg-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* USER MANAGEMENT IMPROVEMENTS */
+
+.sg-main {
+    padding: 30px;
+}
+
+/* Page title */
+.sg-main h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #14532d;
+    margin-bottom: 15px;
+}
+
+/* Search field */
+.sg-main input[type="search"],
+.sg-main input[type="text"] {
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    padding: 12px 15px;
+    min-height: 44px;
+}
+
+/* Buttons */
+.sg-main .btn,
+.sg-main button {
+    border-radius: 8px;
+    padding: 11px 18px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+/* User table */
+.sg-main table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.sg-main th {
+    background: #14532d;
+    color: white;
+    padding: 15px;
+    text-align: left;
+}
+
+.sg-main td {
+    padding: 15px;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle;
+}
+
+.sg-main tbody tr:hover {
+    background: #f0fdf4;
+}
+
+/* Responsive tables */
+@media (max-width: 768px) {
+    .sg-main {
+        padding: 20px 15px;
+    }
+
+    .sg-main table {
+        min-width: 800px;
+    }
+}
+
+
+/* SUGARCANE DASHBOARD BACKGROUND */
+
+.sg-main {
+    position: relative;
+    min-height: 100vh;
+    background:
+        radial-gradient(
+            ellipse at 85% 10%,
+            rgba(134, 239, 172, 0.35),
+            transparent 45%
+        ),
+        radial-gradient(
+            ellipse at 10% 90%,
+            rgba(74, 222, 128, 0.22),
+            transparent 40%
+        ),
+        linear-gradient(
+            135deg,
+            #e8f8eb,
+            #dff3e4,
+            #effaf0
+        ) !important;
+}
+
+
+
+/* MODERN GROWTH MONITORING CHART */
+
+.sg-chart-card {
+    background: #ffffff;
+    border: 1px solid #dcfce7;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(22, 101, 52, 0.08);
+    transition: all 0.3s ease;
+}
+
+.sg-chart-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(22, 101, 52, 0.14);
+}
+
+.sg-chart-card .sg-card-heading h3 {
+    color: #166534;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.sg-chart-card .sg-card-heading p {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.sg-chart-area {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    margin-top: 15px;
+}
+
+
+/* SUGARCANE MINT GREEN BACKGROUND */
+
+.sg-dashboard {
+    min-height: 100vh;
+    background-color: #eaf8ed;
+    background-image:
+        radial-gradient(
+            ellipse at 85% 10%,
+            rgba(134, 239, 172, 0.35),
+            transparent 40%
+        ),
+        radial-gradient(
+            ellipse at 15% 90%,
+            rgba(74, 222, 128, 0.20),
+            transparent 40%
+        ),
+        linear-gradient(
+            135deg,
+            #f0faf1,
+            #e4f5e8,
+            #effaf0
+        );
+}
+
+/* WHITE DASHBOARD CARDS */
+.sg-card {
+    background: #ffffff;
+    border: 1px solid #e2eee4;
+    border-radius: 16px;
+    box-shadow: 0 5px 18px rgba(22, 101, 52, 0.08);
+}
+
+/* TEST IF CSS IS WORKING */
+.sg-main {
+    background-color: #e8f5e9 !important;
+}
+
+
+
+
+/* REALISTIC SUGARCANE FIELD DASHBOARD */
+
+.sg-main {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    min-height: 100vh;
+
+    background:
+        linear-gradient(
+            rgba(232, 248, 235, 0.38),
+            rgba(232, 248, 235, 0.38)
+        ),
+        url("/static/images/sugarcane-bg.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+}
+
+/* Keep dashboard cards readable */
+
+.sg-main .sg-card,
+.sg-main .stat-card,
+.sg-main .dashboard-card,
+.sg-chart-card {
+    background-color: #ffffff;
+}
+
+
+/* SHOW SUGARCANE IMAGE THROUGH DASHBOARD */
+
+.sg-dashboard {
+    background: transparent !important;
+    background-image: none !important;
+}
+
+.sg-main {
+    background-image:
+        linear-gradient(
+            rgba(232, 248, 235, 0.45),
+            rgba(232, 248, 235, 0.45)
+        ),
+        url("/static/images/sugarcane-bg.png") !important;
+
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+
+/* =================================
+   SUGARCANE FIELD PHOTO BACKGROUND
+================================= */
+
+.sg-dashboard {
+    position: relative;
+    min-height: 100vh;
+    background-color: transparent !important;
+
+    background-image:
+        linear-gradient(
+            rgba(232, 248, 235, 0.10),
+            rgba(232, 248, 235, 0.10)
+        ),
+        url("/static/images/sugarcane-bg.png") !important;
+
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+}
+
+/* Keep summary cards and charts white */
+
+.sg-dashboard .sg-card,
+.sg-dashboard .sg-summary-card,
+.sg-dashboard .sg-chart-card {
+    background-color: #ffffff !important;
+}
+
+
+/* ==========================================
+   PREMIUM SUGARCANE DASHBOARD DESIGN
+========================================== */
+
+/* MAIN BACKGROUND */
+.sg-main {
+    background:
+        linear-gradient(
+            rgba(239, 250, 243, 0.88),
+            rgba(232, 247, 237, 0.90)
+        ),
+        url("../images/sugarcane-bg.png") center center / cover fixed no-repeat;
+    min-height: 100vh;
+}
+
+/* DASHBOARD SPACING */
+.sg-dashboard {
+    padding: 30px;
+}
+
+/* DASHBOARD HEADER */
+.sg-heading {
+    margin-bottom: 28px;
+}
+
+.sg-heading h1 {
+    color: #14532d;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+}
+
+.sg-heading p {
+    color: #64748b;
+    font-size: 15px;
+}
+
+/* SUMMARY CARDS */
+.sg-summary-card {
+    background: rgba(255,255,255,0.96);
+    border: 1px solid #e2eee5;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(20,83,45,0.07);
+    transition: all 0.3s ease;
+}
+
+.sg-summary-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(20,83,45,0.14);
+}
+
+.sg-summary-card h2 {
+    color: #166534;
+    font-size: 30px;
+    font-weight: 800;
+    margin: 12px 0;
+}
+
+.sg-summary-card .sg-label {
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.sg-summary-card small {
+    color: #718096;
+}
+
+/* SUMMARY ICONS */
+.sg-summary-card .sg-icon {
+    font-size: 32px;
+}
+
+/* CHART GRID */
+.sg-chart-grid {
+    gap: 22px;
+}
+
+.sg-chart-card {
+    background: #ffffff;
+    border: 1px solid #e2eee5;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 6px 22px rgba(20,83,45,0.08);
+    transition: all 0.3s ease;
+}
+
+.sg-chart-card:hover {
+    box-shadow: 0 12px 28px rgba(20,83,45,0.13);
+}
+
+.sg-card-heading h3 {
+    color: #14532d;
+    font-size: 19px;
+    font-weight: 750;
+}
+
+.sg-card-heading p {
+    color: #718096;
+    font-size: 14px;
+}
+
+/* TABLE DESIGN */
+.sg-dashboard > .sg-card {
+    background: #ffffff;
+    border: 1px solid #e2eee5;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 5px 20px rgba(20,83,45,0.07);
+}
+
+.sg-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.sg-table thead th {
+    background: #166534;
+    color: #ffffff;
+    padding: 15px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.sg-table tbody td {
+    padding: 14px 15px;
+    color: #334155;
+    border-bottom: 1px solid #e8f0e9;
+    font-size: 14px;
+}
+
+.sg-table tbody tr:hover {
+    background: #f0fdf4;
+}
+
+/* STATUS BADGE */
+.sg-status-pill {
+    display: inline-block;
+    background: #dcfce7;
+    color: #166534;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* FOOTER */
+.sg-footer {
+    color: #64748b;
+    text-align: center;
+    padding: 22px;
+    font-size: 13px;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+    .sg-dashboard {
+        padding: 16px;
+    }
+
+    .sg-heading h1 {
+        font-size: 25px;
+    }
+
+    .sg-summary-card,
+    .sg-chart-card {
+        padding: 18px;
+    }
+}
+
+
+/* ===== DASHBOARD PREMIUM DESIGN ===== */
+
+.sg-dashboard {
+    background:
+        linear-gradient(
+            rgba(238, 249, 241, 0.88),
+            rgba(238, 249, 241, 0.90)
+        ),
+        url("../images/sugarcane-bg.png");
+
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    padding: 30px;
+    border-radius: 18px;
+}
+
+/* SUMMARY CARDS */
+.sg-summary-card {
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid rgba(22, 101, 52, 0.10);
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(20, 70, 40, 0.08);
+    transition: all 0.3s ease;
+}
+
+.sg-summary-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(20, 70, 40, 0.16);
+}
+
+/* CHART CARDS */
+.sg-chart-card {
+    background: #ffffff;
+    border: 1px solid #e5eee7;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 5px 20px rgba(20, 70, 40, 0.08);
+    transition: all 0.3s ease;
+}
+
+.sg-chart-card:hover {
+    box-shadow: 0 12px 28px rgba(20, 70, 40, 0.13);
+}
+
+/* CARD HEADINGS */
+.sg-card-heading h3 {
+    color: #14532d;
+    font-weight: 750;
+}
+
+/* SUMMARY NUMBERS */
+.sg-summary-card h2 {
+    color: #166534;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+/* CHART AREA */
+.sg-chart-area {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* TABLE CARDS */
+.sg-table-wrapper {
+    overflow-x: auto;
+}
+
+.sg-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sg-table thead th {
+    background: #166534;
+    color: white;
+    padding: 14px;
+}
+
+.sg-table tbody td {
+    padding: 13px;
+    border-bottom: 1px solid #e5eee7;
+}
+
+.sg-table tbody tr:hover {
+    background: #f0fdf4;
+}

@@ -2,45 +2,545 @@
 {% extends "theme/base.html" %}
 
 {% block content %}
-<div class="sg-page-header">
-    <h1>Sugarcane Fields</h1>
-    <p>View the registered sugarcane fields and their details.</p>
-</div>
 
-<div class="sg-card">
-    <h2>Sugarcane Fields List</h2>
+<style>
+/* ===== SUGARCANE FIELDS PAGE ===== */
 
-    <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr>
-                    <th style="padding: 12px; text-align: left;">Field ID</th>
-                    <th style="padding: 12px; text-align: left;">Farmer ID</th>
-                    <th style="padding: 12px; text-align: left;">Field Name</th>
-                    <th style="padding: 12px; text-align: left;">Location</th>
-                    <th style="padding: 12px; text-align: left;">Area (Hectares)</th>
-                    <th style="padding: 12px; text-align: left;">Soil Type</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for field in fields %}
-                <tr>
-                    <td style="padding: 12px;">{{ field.field_id }}</td>
-                    <td style="padding: 12px;">{{ field.farmer_id }}</td>
-                    <td style="padding: 12px;">{{ field.field_name }}</td>
-                    <td style="padding: 12px;">{{ field.location|default:"—" }}</td>
-                    <td style="padding: 12px;">{{ field.area_hectares|default:"—" }}</td>
-                    <td style="padding: 12px;">{{ field.soil_type|default:"—" }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="6" style="padding: 12px; text-align: center;">
-                        No sugarcane field records found.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+.sg-fields-page {
+    padding: 5px 0 25px;
+}
+
+.sg-fields-page * {
+    box-sizing: border-box;
+}
+
+.sg-fields-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.sg-fields-header h1 {
+    color: #14532d;
+    font-size: 30px;
+    font-weight: 750;
+    margin: 0 0 8px;
+}
+
+.sg-fields-header p {
+    color: #64748b;
+    margin: 0;
+    font-size: 14px;
+}
+
+/* SUMMARY CARD */
+
+.sg-fields-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.sg-stat-card {
+    background: #ffffff;
+    border: 1px solid #e2eee5;
+    border-radius: 14px;
+    padding: 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.035);
+}
+
+.sg-stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: #dcfce7;
+    color: #15803d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+}
+
+.sg-stat-card h3 {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
+    margin: 0 0 5px;
+}
+
+.sg-stat-card h2 {
+    color: #14532d;
+    font-size: 27px;
+    margin: 0;
+    font-weight: 750;
+}
+
+/* MAIN CARD */
+
+.sg-fields-card {
+    background: #ffffff;
+    border: 1px solid #e2eee5;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.035);
+}
+
+.sg-fields-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.sg-fields-card-header h2 {
+    color: #14532d;
+    font-size: 23px;
+    margin: 0 0 5px;
+}
+
+.sg-fields-card-header p {
+    color: #64748b;
+    font-size: 13px;
+    margin: 0;
+}
+
+/* ADD BUTTON */
+
+.sg-add-field {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #15803d;
+    color: white !important;
+    padding: 12px 19px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: 0.2s ease;
+}
+
+.sg-add-field:hover {
+    background: #166534;
+    transform: translateY(-2px);
+}
+
+/* SEARCH */
+
+.sg-fields-search {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.sg-fields-search input {
+    width: 100%;
+    padding: 14px 16px 14px 43px;
+    border: 1px solid #dce5df;
+    border-radius: 9px;
+    outline: none;
+    font-size: 14px;
+    color: #334155;
+    background: #ffffff;
+    transition: 0.2s;
+}
+
+.sg-fields-search input:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22,163,74,0.10);
+}
+
+.sg-search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+}
+
+/* TABLE */
+
+.sg-fields-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.sg-fields-table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.sg-fields-table thead {
+    background: #14532d;
+    color: #ffffff;
+}
+
+.sg-fields-table th {
+    padding: 16px 14px;
+    font-size: 13px;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.sg-fields-table td {
+    padding: 16px 14px;
+    border-bottom: 1px solid #edf0f2;
+    color: #334155;
+    font-size: 14px;
+}
+
+.sg-fields-table tbody tr {
+    transition: background 0.2s;
+}
+
+.sg-fields-table tbody tr:hover {
+    background: #f0fdf4;
+}
+
+.sg-fields-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.sg-field-id {
+    color: #15803d !important;
+    font-weight: 700;
+}
+
+.sg-field-name {
+    color: #14532d !important;
+    font-weight: 650;
+}
+
+.sg-soil-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: #f0fdf4;
+    color: #166534;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ACTION BUTTONS */
+
+.sg-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sg-edit-btn {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 6px;
+    background: #eff6ff;
+    color: #2563eb !important;
+    text-decoration: none !important;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.sg-edit-btn:hover {
+    background: #dbeafe;
+}
+
+.sg-delete-btn {
+    border: none;
+    padding: 7px 12px;
+    border-radius: 6px;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sg-delete-btn:hover {
+    background: #dc2626;
+    color: white;
+}
+
+/* EMPTY STATE */
+
+.sg-empty-state {
+    padding: 35px !important;
+    text-align: center;
+    color: #64748b !important;
+}
+
+.sg-empty-icon {
+    display: block;
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+.sg-search-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 13px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+    .sg-fields-header h1 {
+        font-size: 24px;
+    }
+
+    .sg-fields-card {
+        padding: 16px;
+    }
+
+    .sg-fields-card-header h2 {
+        font-size: 20px;
+    }
+
+    .sg-add-field {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+
+
+<div class="sg-fields-page">
+
+    <!-- PAGE HEADER -->
+    <div class="sg-fields-header">
+        <div>
+            <h1>🌱 Sugarcane Fields</h1>
+            <p>View, manage, and monitor your registered sugarcane fields.</p>
+        </div>
     </div>
+
+
+    <!-- SUMMARY CARDS -->
+    <div class="sg-fields-stats">
+
+        <div class="sg-stat-card">
+            <div class="sg-stat-icon">🌱</div>
+            <div>
+                <h3>Total Registered Fields</h3>
+                <h2>{{ fields|length }}</h2>
+            </div>
+        </div>
+
+        <div class="sg-stat-card">
+            <div class="sg-stat-icon">📋</div>
+            <div>
+                <h3>Field Management</h3>
+                <h2>Records</h2>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- FIELDS TABLE CARD -->
+    <div class="sg-fields-card">
+
+        <div class="sg-fields-card-header">
+            <div>
+                <h2>Sugarcane Fields List</h2>
+                <p>Manage all registered agricultural field information.</p>
+            </div>
+
+            <a href="{% url 'field_add' %}" class="sg-add-field">
+                <span>+</span> Add New Field
+            </a>
+        </div>
+
+
+        <!-- SEARCH -->
+        <div class="sg-fields-search">
+            <span class="sg-search-icon">🔍</span>
+
+            <input
+                type="text"
+                id="fieldSearch"
+                placeholder="Search field name, farmer ID, location, or soil type..."
+                oninput="searchFields()"
+                aria-label="Search sugarcane fields"
+            >
+        </div>
+
+
+        <div class="sg-search-status">
+            <span>Registered Field Records</span>
+            <span id="fieldResultCount" aria-live="polite">
+                {{ fields|length }} field(s) found
+            </span>
+        </div>
+
+
+        <!-- TABLE -->
+        <div class="sg-fields-table-wrapper">
+
+            <table class="sg-fields-table" id="fieldsTable">
+
+                <thead>
+                    <tr>
+                        <th>Field ID</th>
+                        <th>Farmer ID</th>
+                        <th>Field Name</th>
+                        <th>Location</th>
+                        <th>Area (Hectares)</th>
+                        <th>Soil Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+
+                <tbody>
+
+                    {% for field in fields %}
+
+                    <tr class="field-row">
+
+                        <td class="sg-field-id">
+                            #{{ field.field_id }}
+                        </td>
+
+                        <td>
+                            {{ field.farmer_id }}
+                        </td>
+
+                        <td class="sg-field-name">
+                            {{ field.field_name }}
+                        </td>
+
+                        <td>
+                            {{ field.location|default:"—" }}
+                        </td>
+
+                        <td>
+                            {{ field.area_hectares|default:"—" }}
+                        </td>
+
+                        <td>
+                            <span class="sg-soil-badge">
+                                {{ field.soil_type|default:"Not specified" }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="sg-actions">
+
+                                <a href="{% url 'field_edit' field.field_id %}"
+                                   class="sg-edit-btn">
+                                    ✏ Edit
+                                </a>
+
+                                <form method="POST"
+                                      action="{% url 'field_delete' field.field_id %}"
+                                      onsubmit="return confirm('Are you sure you want to delete this sugarcane field?');">
+
+                                    {% csrf_token %}
+
+                                    <button type="submit" class="sg-delete-btn">
+                                        🗑 Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="7" class="sg-empty-state">
+                            <span class="sg-empty-icon">🌱</span>
+                            <strong>No Sugarcane Fields Found</strong>
+                            <p>Click Add New Field to register your first field.</p>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+
+                    <!-- NO SEARCH RESULTS -->
+                    <tr id="noSearchResults" style="display:none;">
+                        <td colspan="7" class="sg-empty-state">
+                            <span class="sg-empty-icon">🔍</span>
+                            <strong>No Matching Fields</strong>
+                            <p>Try searching with another field name or location.</p>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
 </div>
+
+
+<!-- SEARCH JAVASCRIPT -->
+<script>
+
+function searchFields() {
+
+    let input = document.getElementById("fieldSearch")
+        .value.toLowerCase().trim();
+
+    let rows = document.querySelectorAll(
+        "#fieldsTable tbody tr.field-row"
+    );
+
+    let visibleCount = 0;
+
+    rows.forEach(function(row) {
+
+        let rowText = row.innerText.toLowerCase();
+
+        if (rowText.includes(input)) {
+
+            row.style.display = "";
+            visibleCount++;
+
+        } else {
+
+            row.style.display = "none";
+
+        }
+
+    });
+
+    let noResults = document.getElementById("noSearchResults");
+
+    if (noResults) {
+        noResults.style.display =
+            (visibleCount === 0 && rows.length > 0) ? "table-row" : "none";
+    }
+
+    document.getElementById("fieldResultCount").textContent =
+        visibleCount + " field(s) found";
+
+}
+
+</script>
+
 {% endblock %}

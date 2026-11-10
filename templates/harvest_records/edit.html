@@ -1,0 +1,220 @@
+
+{% extends "theme/base.html" %}
+
+{% block content %}
+
+<style>
+    .sg-edit-container {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .sg-page-header {
+        margin-bottom: 25px;
+    }
+
+    .sg-page-header h1 {
+        color: #174d2b;
+        font-size: 28px;
+        margin-bottom: 8px;
+    }
+
+    .sg-page-header p {
+        color: #718078;
+        margin: 0;
+    }
+
+    .sg-form-card {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 30px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e5eee7;
+    }
+
+    .sg-form-card h2 {
+        color: #245c37;
+        font-size: 20px;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e8eee9;
+    }
+
+    .sg-form-group {
+        margin-bottom: 20px;
+    }
+
+    .sg-form-group label {
+        display: block;
+        font-weight: 600;
+        color: #344b3b;
+        margin-bottom: 8px;
+    }
+
+    .sg-form-group input,
+    .sg-form-group select,
+    .sg-form-group textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #d8e3da;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        box-sizing: border-box;
+        background: #ffffff;
+    }
+
+    .sg-form-group input:focus,
+    .sg-form-group select:focus,
+    .sg-form-group textarea:focus {
+        border-color: #36864d;
+        box-shadow: 0 0 0 3px rgba(54, 134, 77, 0.10);
+    }
+
+    .sg-form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .sg-form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 25px;
+        flex-wrap: wrap;
+    }
+
+    .sg-btn {
+        display: inline-block;
+        padding: 11px 22px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .sg-btn-cancel {
+        background: #edf1ee;
+        color: #47564b;
+    }
+
+    .sg-btn-save {
+        background: #287a3e;
+        color: white;
+    }
+
+    .sg-btn-save:hover {
+        background: #1d6030;
+    }
+
+    .sg-btn-cancel:hover {
+        background: #dfe7e1;
+    }
+
+    @media (max-width: 600px) {
+        .sg-form-card {
+            padding: 20px;
+        }
+
+        .sg-form-actions {
+            flex-direction: column;
+        }
+
+        .sg-btn {
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="sg-edit-container">
+
+    <div class="sg-page-header">
+        <h1>Edit Harvest Record</h1>
+        <p>Update the recorded sugarcane harvest information.</p>
+    </div>
+
+    <div class="sg-form-card">
+
+        <h2>Harvest Record Information</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="sg-form-group">
+                <label for="crop_id">Crop Cycle</label>
+
+                <select name="crop_id" id="crop_id" required>
+                    <option value="">Select Crop Cycle</option>
+
+                    {% for crop in crops %}
+                    <option value="{{ crop.crop_id }}"
+                        {% if crop.crop_id == record.crop_id %}selected{% endif %}>
+                        Crop Cycle #{{ crop.crop_id }} - {{ crop.variety|default:"Sugarcane Crop" }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <div class="sg-form-group">
+                <label for="harvest_date">Harvest Date</label>
+                <input
+                    type="date"
+                    name="harvest_date"
+                    id="harvest_date"
+                    value="{{ record.harvest_date|date:'Y-m-d' }}"
+                    required
+                >
+            </div>
+
+            <div class="sg-form-group">
+                <label for="quantity_tons">Quantity (Tons)</label>
+                <input
+                    type="number"
+                    name="quantity_tons"
+                    id="quantity_tons"
+                    step="0.01"
+                    min="0"
+                    value="{{ record.quantity_tons|default_if_none:'' }}"
+                    placeholder="Enter harvested quantity"
+                >
+            </div>
+
+            <div class="sg-form-group">
+                <label for="quality_grade">Quality Grade</label>
+                <input
+                    type="text"
+                    name="quality_grade"
+                    id="quality_grade"
+                    value="{{ record.quality_grade|default_if_none:'' }}"
+                    placeholder="Enter quality grade"
+                >
+            </div>
+
+            <div class="sg-form-group">
+                <label for="notes">Notes</label>
+                <textarea
+                    name="notes"
+                    id="notes"
+                    placeholder="Enter additional harvest information..."
+                >{{ record.notes|default_if_none:'' }}</textarea>
+            </div>
+
+            <div class="sg-form-actions">
+                <a href="{% url 'harvest_records' %}" class="sg-btn sg-btn-cancel">
+                    Cancel
+                </a>
+
+                <button type="submit" class="sg-btn sg-btn-save">
+                    Save Changes
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

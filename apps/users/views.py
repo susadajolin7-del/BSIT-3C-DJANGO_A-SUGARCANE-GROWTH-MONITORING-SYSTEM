@@ -33,9 +33,21 @@ def user_list_page(request):
     page_number = request.GET.get('page', 1)
     users = paginator.get_page(page_number)
 
+        # USER STATISTICS
+    total_users = User.objects.count()
+    active_users = User.objects.filter(is_active=True).count()
+    inactive_users = User.objects.filter(is_active=False).count()
+    staff_users = User.objects.filter(is_staff=True).count()
+
     return render(request, 'users/list.html', {
         'users': users,
         'query': query,
+
+        # Statistics Cards
+        'total_users': total_users,
+        'active_users': active_users,
+        'inactive_users': inactive_users,
+        'staff_users': staff_users,
     })
 
 

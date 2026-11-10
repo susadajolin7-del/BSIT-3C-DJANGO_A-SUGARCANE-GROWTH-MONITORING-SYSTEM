@@ -1,0 +1,40 @@
+{% extends "theme/base.html" %}
+
+{% block content %}
+<div class="sg-page-header">
+    <h1>Add Farmer</h1>
+    <p>Register a new sugarcane farmer.</p>
+</div>
+
+<div class="sg-card" style="padding:25px; max-width:700px;">
+    <h2>Farmer Information</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <p>
+            <label>First Name *</label>
+            <input type="text" name="first_name" required>
+        </p>
+
+        <p>
+            <label>Last Name *</label>
+            <input type="text" name="last_name" required>
+        </p>
+
+        <p>
+            <label>Phone</label>
+            <input type="text" name="phone">
+        </p>
+
+        <p>
+            <label>Address</label>
+            <textarea name="address" rows="3"></textarea>
+        </p>
+
+        <button type="submit">Save Farmer</button>
+
+        <a href="{% url 'farmers' %}">Cancel</a>
+    </form>
+</div>
+{% endblock %}

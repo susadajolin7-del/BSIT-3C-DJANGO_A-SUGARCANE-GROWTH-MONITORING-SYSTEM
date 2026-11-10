@@ -2,45 +2,354 @@
 {% extends "theme/base.html" %}
 
 {% block content %}
+
+<style>
+    .sg-harvest-page {
+        width: 100%;
+    }
+
+    .sg-harvest-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .sg-harvest-toolbar h2 {
+        margin: 0;
+        color: #1e293b;
+    }
+
+    .sg-harvest-add {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 11px 18px;
+        background: #15803d;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .sg-harvest-add:hover {
+        background: #166534;
+        color: white;
+    }
+
+    .sg-harvest-search {
+        position: relative;
+        max-width: 380px;
+        margin-bottom: 20px;
+    }
+
+    .sg-harvest-search input {
+        width: 100%;
+        padding: 12px 15px 12px 40px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 14px;
+        box-sizing: border-box;
+        outline: none;
+    }
+
+    .sg-harvest-search input:focus {
+        border-color: #15803d;
+        box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.12);
+    }
+
+    .sg-harvest-search span {
+        position: absolute;
+        left: 14px;
+        top: 11px;
+        color: #94a3b8;
+        pointer-events: none;
+    }
+
+    .sg-harvest-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .sg-harvest-table {
+        width: 100%;
+        min-width: 1000px;
+        border-collapse: collapse;
+    }
+
+    .sg-harvest-table th {
+        padding: 14px 12px;
+        background: #f0fdf4;
+        color: #166534;
+        font-size: 13px;
+        font-weight: 700;
+        text-align: left;
+        border-bottom: 1px solid #dcfce7;
+        white-space: nowrap;
+    }
+
+    .sg-harvest-table td {
+        padding: 14px 12px;
+        color: #475569;
+        font-size: 13px;
+        border-bottom: 1px solid #e2e8f0;
+        vertical-align: middle;
+    }
+
+    .sg-harvest-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .sg-harvest-id {
+        color: #15803d;
+        font-weight: 700;
+    }
+
+    .sg-harvest-quantity {
+        color: #334155;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .sg-harvest-grade {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        background: #f0fdf4;
+        color: #166534;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .sg-harvest-notes {
+        min-width: 150px;
+        max-width: 250px;
+        white-space: normal;
+        line-height: 1.5;
+    }
+
+    .sg-harvest-actions {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        white-space: nowrap;
+    }
+
+    .sg-harvest-edit,
+    .sg-harvest-delete {
+        padding: 7px 11px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .sg-harvest-edit {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+    }
+
+    .sg-harvest-edit:hover {
+        background: #dbeafe;
+    }
+
+    .sg-harvest-delete {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
+
+    .sg-harvest-delete:hover {
+        background: #fee2e2;
+    }
+
+    .sg-harvest-empty {
+        padding: 35px 15px !important;
+        text-align: center;
+        color: #94a3b8 !important;
+    }
+
+    @media (max-width: 600px) {
+        .sg-harvest-toolbar {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .sg-harvest-add {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .sg-harvest-search {
+            max-width: 100%;
+        }
+    }
+</style>
+
 <div class="sg-page-header">
     <h1>Harvest Records</h1>
-    <p>Tingnan ang mga tala ng pag-aani ng tubo.</p>
+    <p>View and monitor sugarcane harvest records and production results.</p>
 </div>
 
-<div class="sg-card">
-    <h2>Harvest Records List</h2>
+<div class="sg-card sg-harvest-page">
 
-    <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse;">
+    <div class="sg-harvest-toolbar">
+        <div>
+            <h2>Harvest Records List</h2>
+            <p style="color: #64748b; font-size: 13px; margin: 6px 0 0;">
+                Recorded sugarcane harvest information
+            </p>
+        </div>
+
+        <a href="{% url 'harvest_record_add' %}" class="sg-harvest-add">
+            + Add Harvest Record
+        </a>
+    </div>
+
+    <div class="sg-harvest-search">
+        <span>⌕</span>
+        <input
+            type="text"
+            id="harvestSearch"
+            placeholder="Search harvest records..."
+            onkeyup="searchHarvestRecords()"
+        >
+    </div>
+
+    <div class="sg-harvest-table-wrapper">
+        <table class="sg-harvest-table">
             <thead>
                 <tr>
-                    <th style="padding: 12px; text-align: left;">Harvest ID</th>
-                    <th style="padding: 12px; text-align: left;">Crop ID</th>
-                    <th style="padding: 12px; text-align: left;">Harvest Date</th>
-                    <th style="padding: 12px; text-align: left;">Quantity (Tons)</th>
-                    <th style="padding: 12px; text-align: left;">Quality Grade</th>
-                    <th style="padding: 12px; text-align: left;">Notes</th>
+                    <th>Harvest ID</th>
+                    <th>Crop ID</th>
+                    <th>Harvest Date</th>
+                    <th>Quantity (Tons)</th>
+                    <th>Quality Grade</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
+
             <tbody>
+
                 {% for record in harvest_records %}
-                <tr>
-                    <td style="padding: 12px;">{{ record.harvest_id }}</td>
-                    <td style="padding: 12px;">{{ record.crop_id }}</td>
-                    <td style="padding: 12px;">{{ record.harvest_date|date:"M d, Y" }}</td>
-                    <td style="padding: 12px;">{{ record.quantity_tons|default:"—" }}</td>
-                    <td style="padding: 12px;">{{ record.quality_grade|default:"—" }}</td>
-                    <td style="padding: 12px;">{{ record.notes|default:"—" }}</td>
+                <tr class="harvest-row">
+
+                    <td>
+                        <span class="sg-harvest-id">
+                            #{{ record.harvest_id }}
+                        </span>
+                    </td>
+
+                    <td>{{ record.crop_id }}</td>
+
+                    <td>
+                        {{ record.harvest_date|date:"M d, Y" }}
+                    </td>
+
+                    <td>
+                        <span class="sg-harvest-quantity">
+                            {{ record.quantity_tons|default:"—" }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {% if record.quality_grade %}
+                            <span class="sg-harvest-grade">
+                                {{ record.quality_grade }}
+                            </span>
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+
+                    <td class="sg-harvest-notes">
+                        {{ record.notes|default:"—" }}
+                    </td>
+
+                    <td>
+                        <div class="sg-harvest-actions">
+
+                            <a
+                                href="{% url 'harvest_record_edit' record.harvest_id %}"
+                                class="sg-harvest-edit"
+                            >
+                                Edit
+                            </a>
+
+                            <form
+                                method="POST"
+                                action="{% url 'harvest_record_delete' record.harvest_id %}"
+                                onsubmit="return confirm('Are you sure you want to delete this harvest record?');"
+                                style="display: inline;"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="sg-harvest-delete"
+                                >
+                                    Delete
+                                </button>
+                            </form>
+
+                        </div>
+                    </td>
+
                 </tr>
+
                 {% empty %}
                 <tr>
-                    <td colspan="6" style="padding: 12px; text-align: center;">
-                        Wala pang harvest records.
+                    <td colspan="7" class="sg-harvest-empty">
+                        No harvest records found.
                     </td>
                 </tr>
                 {% endfor %}
+
+                <tr id="harvestNoResults" style="display: none;">
+                    <td colspan="7" class="sg-harvest-empty">
+                        No matching harvest records found.
+                    </td>
+                </tr>
+
             </tbody>
         </table>
     </div>
+
+    <p style="color: #94a3b8; font-size: 12px; margin-top: 15px;">
+        Total Harvest Records: {{ harvest_records|length }}
+    </p>
+
 </div>
+
+<script>
+    function searchHarvestRecords() {
+        const input = document.getElementById("harvestSearch");
+        const filter = input.value.toLowerCase();
+        const rows = document.querySelectorAll(".harvest-row");
+        const noResults = document.getElementById("harvestNoResults");
+
+        let visibleCount = 0;
+
+        rows.forEach(function(row) {
+            const text = row.textContent.toLowerCase();
+
+            if (text.includes(filter)) {
+                row.style.display = "";
+                visibleCount++;
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        noResults.style.display = visibleCount === 0 ? "" : "none";
+    }
+</script>
+
 {% endblock %}

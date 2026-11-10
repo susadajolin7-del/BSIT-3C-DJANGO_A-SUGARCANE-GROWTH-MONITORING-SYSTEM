@@ -2,57 +2,599 @@
 {% extends "theme/base.html" %}
 
 {% block content %}
-<div class="sg-page-header">
-    <h1>Crop Cycles</h1>
-    <p>View and monitor sugarcane planting cycles and harvest predictions.</p>
-</div>
 
-<div class="sg-card">
-    <h2>Crop Cycles List</h2>
+<style>
+/* ===== CROP CYCLES PAGE ===== */
 
-    <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr>
-                    <th style="padding: 12px; text-align: left;">Crop ID</th>
-                    <th style="padding: 12px; text-align: left;">Field ID</th>
-                    <th style="padding: 12px; text-align: left;">Variety</th>
-                    <th style="padding: 12px; text-align: left;">Planting Date</th>
-                    <th style="padding: 12px; text-align: left;">Expected Harvest Date</th>
-                    <th style="padding: 12px; text-align: left;">Predicted Harvest Date</th>
-                    <th style="padding: 12px; text-align: left;">Crop Status</th>
-                    <th style="padding: 12px; text-align: left;">Prediction Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for crop in crop_cycles %}
-                <tr>
-                    <td style="padding: 12px;">{{ crop.crop_id }}</td>
-                    <td style="padding: 12px;">{{ crop.field_id }}</td>
-                    <td style="padding: 12px;">{{ crop.variety|default:"—" }}</td>
-                    <td style="padding: 12px;">{{ crop.planting_date|date:"M d, Y" }}</td>
-                    <td style="padding: 12px;">
-                        {{ crop.expected_harvest_date|date:"M d, Y"|default:"—" }}
-                    </td>
-                    <td style="padding: 12px;">
-                        {{ crop.predicted_harvest_date|date:"M d, Y"|default:"—" }}
-                    </td>
-                    <td style="padding: 12px;">{{ crop.status|default:"—" }}</td>
-                    <td style="padding: 12px;">
-                        <span style="font-weight: bold;">
-                            {{ crop.prediction_status }}
-                        </span>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="8" style="padding: 12px; text-align: center;">
-                        No crop cycle records found.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+.sg-crop-page {
+    padding: 5px 0 30px;
+}
+
+.sg-crop-page * {
+    box-sizing: border-box;
+}
+
+.sg-crop-header {
+    margin-bottom: 25px;
+}
+
+.sg-crop-header h1 {
+    color: #14532d;
+    font-size: 29px;
+    font-weight: 750;
+    margin: 0 0 8px;
+}
+
+.sg-crop-header p {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* SUMMARY */
+
+.sg-crop-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.sg-crop-stat {
+    background: #ffffff;
+    border: 1px solid #e2eee5;
+    border-radius: 14px;
+    padding: 21px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.035);
+}
+
+.sg-crop-stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: #dcfce7;
+    color: #15803d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.sg-crop-stat h3 {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
+    margin: 0 0 5px;
+}
+
+.sg-crop-stat h2 {
+    color: #14532d;
+    font-size: 27px;
+    font-weight: 750;
+    margin: 0;
+}
+
+/* MAIN CARD */
+
+.sg-crop-card {
+    background: #ffffff;
+    border: 1px solid #e2eee5;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.035);
+}
+
+.sg-crop-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.sg-crop-card-header h2 {
+    color: #14532d;
+    font-size: 22px;
+    margin: 0 0 5px;
+}
+
+.sg-crop-card-header p {
+    color: #64748b;
+    font-size: 13px;
+    margin: 0;
+}
+
+/* ADD BUTTON */
+
+.sg-crop-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #15803d;
+    color: white !important;
+    padding: 12px 19px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: 0.2s;
+}
+
+.sg-crop-add-btn:hover {
+    background: #166534;
+    transform: translateY(-2px);
+}
+
+/* SEARCH */
+
+.sg-crop-search {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.sg-crop-search input {
+    width: 100%;
+    padding: 14px 16px 14px 43px;
+    border: 1px solid #dce5df;
+    border-radius: 9px;
+    outline: none;
+    font-size: 14px;
+    color: #334155;
+    background: #ffffff;
+    transition: 0.2s;
+}
+
+.sg-crop-search input:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22,163,74,0.10);
+}
+
+.sg-crop-search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #94a3b8;
+}
+
+.sg-crop-result-info {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 13px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+/* TABLE */
+
+.sg-crop-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.sg-crop-table {
+    width: 100%;
+    min-width: 1150px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.sg-crop-table thead {
+    background: #14532d;
+    color: #ffffff;
+}
+
+.sg-crop-table th {
+    padding: 16px 14px;
+    font-size: 13px;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.sg-crop-table td {
+    padding: 15px 14px;
+    border-bottom: 1px solid #edf0f2;
+    color: #334155;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.sg-crop-table tbody tr {
+    transition: background 0.2s;
+}
+
+.sg-crop-table tbody tr:hover {
+    background: #f0fdf4;
+}
+
+.sg-crop-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.sg-crop-id {
+    color: #15803d !important;
+    font-weight: 700;
+}
+
+.sg-crop-variety {
+    color: #14532d !important;
+    font-weight: 650;
+}
+
+/* STATUS BADGES */
+
+.sg-status {
+    display: inline-block;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.sg-status-growing {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.sg-status-completed {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.sg-status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.sg-status-other {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* ACTIONS */
+
+.sg-crop-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sg-crop-edit {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 6px;
+    background: #eff6ff;
+    color: #2563eb !important;
+    text-decoration: none !important;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.sg-crop-edit:hover {
+    background: #dbeafe;
+}
+
+.sg-crop-delete {
+    border: none;
+    padding: 7px 12px;
+    border-radius: 6px;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sg-crop-delete:hover {
+    background: #dc2626;
+    color: white;
+}
+
+/* EMPTY STATE */
+
+.sg-crop-empty {
+    padding: 35px !important;
+    text-align: center;
+    color: #64748b !important;
+    white-space: normal !important;
+}
+
+.sg-crop-empty-icon {
+    display: block;
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .sg-crop-header h1 {
+        font-size: 24px;
+    }
+
+    .sg-crop-card {
+        padding: 16px;
+    }
+
+    .sg-crop-card-header h2 {
+        font-size: 20px;
+    }
+
+    .sg-crop-add-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+
+
+<div class="sg-crop-page">
+
+    <!-- PAGE HEADER -->
+    <div class="sg-crop-header">
+        <h1>🌱 Crop Cycles</h1>
+        <p>View and monitor sugarcane planting cycles and harvest predictions.</p>
     </div>
+
+
+    <!-- SUMMARY CARD -->
+    <div class="sg-crop-stats">
+
+        <div class="sg-crop-stat">
+            <div class="sg-crop-stat-icon">🌱</div>
+            <div>
+                <h3>Total Crop Cycles</h3>
+                <h2>{{ crop_cycles|length }}</h2>
+            </div>
+        </div>
+
+        <div class="sg-crop-stat">
+            <div class="sg-crop-stat-icon">📅</div>
+            <div>
+                <h3>Harvest Monitoring</h3>
+                <h2>Active</h2>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- CROP CYCLES CARD -->
+    <div class="sg-crop-card">
+
+        <div class="sg-crop-card-header">
+            <div>
+                <h2>Crop Cycles List</h2>
+                <p>Manage planting records and monitor expected harvest dates.</p>
+            </div>
+
+            <a href="{% url 'crop_cycle_add' %}" class="sg-crop-add-btn">
+                + Add Crop Cycle
+            </a>
+        </div>
+
+
+        <!-- SEARCH -->
+        <div class="sg-crop-search">
+            <span class="sg-crop-search-icon">🔍</span>
+
+            <input
+                type="text"
+                id="cropSearch"
+                placeholder="Search crop ID, field ID, variety, or status..."
+                oninput="searchCropCycles()"
+                aria-label="Search crop cycles"
+            >
+        </div>
+
+
+        <div class="sg-crop-result-info">
+            <span>Registered Planting Cycles</span>
+            <span id="cropResultCount">
+                {{ crop_cycles|length }} crop cycle(s) found
+            </span>
+        </div>
+
+
+        <!-- TABLE -->
+        <div class="sg-crop-table-wrapper">
+
+            <table class="sg-crop-table" id="cropCyclesTable">
+
+                <thead>
+                    <tr>
+                        <th>Crop ID</th>
+                        <th>Field ID</th>
+                        <th>Variety</th>
+                        <th>Planting Date</th>
+                        <th>Expected Harvest</th>
+                        <th>Predicted Harvest</th>
+                        <th>Crop Status</th>
+                        <th>Prediction Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for crop in crop_cycles %}
+
+                    <tr class="crop-row">
+
+                        <td class="sg-crop-id">
+                            #{{ crop.crop_id }}
+                        </td>
+
+                        <td>
+                            #{{ crop.field_id }}
+                        </td>
+
+                        <td class="sg-crop-variety">
+                            {{ crop.variety|default:"—" }}
+                        </td>
+
+                        <td>
+                            {{ crop.planting_date|date:"M d, Y"|default:"—" }}
+                        </td>
+
+                        <td>
+                            {{ crop.expected_harvest_date|date:"M d, Y"|default:"—" }}
+                        </td>
+
+                        <td>
+                            {{ crop.predicted_harvest_date|date:"M d, Y"|default:"—" }}
+                        </td>
+
+                        <td>
+                            {% with status=crop.status|default:"Unknown" %}
+                                {% if status == "Growing" %}
+                                    <span class="sg-status sg-status-growing">
+                                        {{ status }}
+                                    </span>
+                                {% elif status == "Completed" %}
+                                    <span class="sg-status sg-status-completed">
+                                        {{ status }}
+                                    </span>
+                                {% elif status == "Pending" %}
+                                    <span class="sg-status sg-status-pending">
+                                        {{ status }}
+                                    </span>
+                                {% else %}
+                                    <span class="sg-status sg-status-other">
+                                        {{ status }}
+                                    </span>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+
+                        <td>
+                            {% with prediction=crop.prediction_status|default:"Not available" %}
+                                {% if prediction == "Growing" %}
+                                    <span class="sg-status sg-status-growing">
+                                        {{ prediction }}
+                                    </span>
+                                {% elif prediction == "Completed" %}
+                                    <span class="sg-status sg-status-completed">
+                                        {{ prediction }}
+                                    </span>
+                                {% elif prediction == "Pending" %}
+                                    <span class="sg-status sg-status-pending">
+                                        {{ prediction }}
+                                    </span>
+                                {% else %}
+                                    <span class="sg-status sg-status-other">
+                                        {{ prediction }}
+                                    </span>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+
+                        <td>
+                            <div class="sg-crop-actions">
+
+                                <a href="{% url 'crop_cycle_edit' crop.crop_id %}"
+                                   class="sg-crop-edit">
+                                    ✏ Edit
+                                </a>
+
+                                <form method="POST"
+                                      action="{% url 'crop_cycle_delete' crop.crop_id %}"
+                                      onsubmit="return confirm('Are you sure you want to delete this crop cycle?');">
+
+                                    {% csrf_token %}
+
+                                    <button type="submit" class="sg-crop-delete">
+                                        🗑 Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="9" class="sg-crop-empty">
+                            <span class="sg-crop-empty-icon">🌱</span>
+                            <strong>No Crop Cycle Records Found</strong>
+                            <p>Click Add Crop Cycle to register your first planting cycle.</p>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+
+                    <!-- NO SEARCH RESULTS -->
+                    <tr id="noCropResults" style="display:none;">
+                        <td colspan="9" class="sg-crop-empty">
+                            <span class="sg-crop-empty-icon">🔍</span>
+                            <strong>No Matching Crop Cycles</strong>
+                            <p>Try searching using another crop ID, field ID, or variety.</p>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
 </div>
+
+
+<!-- SEARCH JAVASCRIPT -->
+<script>
+
+function searchCropCycles() {
+
+    let input = document.getElementById("cropSearch")
+        .value.toLowerCase().trim();
+
+    let rows = document.querySelectorAll(
+        "#cropCyclesTable tbody tr.crop-row"
+    );
+
+    let visibleCount = 0;
+
+    rows.forEach(function(row) {
+
+        let rowText = row.innerText.toLowerCase();
+
+        if (rowText.includes(input)) {
+            row.style.display = "";
+            visibleCount++;
+        } else {
+            row.style.display = "none";
+        }
+
+    });
+
+    let noResults = document.getElementById("noCropResults");
+
+    if (noResults) {
+        noResults.style.display =
+            (visibleCount === 0 && rows.length > 0)
+            ? "table-row"
+            : "none";
+    }
+
+    document.getElementById("cropResultCount").textContent =
+        visibleCount + " crop cycle(s) found";
+
+}
+
+</script>
+
 {% endblock %}

@@ -23,7 +23,7 @@
         <article class="sg-card sg-summary-card">
             <div>
                 <span class="sg-label">Total Fields</span>
-            <h2 id="totalFields">2</h2>
+            <h2 id="totalFields">{{ total_fields }}</h2>
                 <small>Registered fields</small>
             </div>
             <div class="sg-icon">🌱</div>
@@ -32,7 +32,7 @@
         <article class="sg-card sg-summary-card">
             <div>
                 <span class="sg-label">Active Varieties</span>
-                <h2 id="activeVarieties">{{ total_crop_cycles }}</h2>
+                <h2 id="activeVarieties">{{ active_varieties }}</h2>
                 <small>Sugarcane varieties</small>
             </div>
             <div class="sg-icon">🌿</div>
@@ -41,7 +41,7 @@
         <article class="sg-card sg-summary-card">
             <div>
                 <span class="sg-label">Growth Records</span>
-                <h2 id="growthRecords"> 3
+                <h2 id="growthRecords">{{ total_growth_records }}</h2>
                 <small>Total measurements</small>
             </div>
             <div class="sg-icon">📊</div>
@@ -50,7 +50,7 @@
         <article class="sg-card sg-summary-card">
             <div>
                 <span class="sg-label">Average Height</span>
-                <h2>78.5 <span class="sg-unit">cm</span></h2>
+                <h2>{{ average_height|floatformat:2 }} <span class="sg-unit">cm</span></h2>
                 <small>Average plant height</small>
             </div>
             <div class="sg-icon">📈</div>
@@ -64,8 +64,8 @@
         <article class="sg-card sg-chart-card">
             <div class="sg-card-heading">
                 <div>
-                    <h3>Growth Trend</h3>
-                    <p>Height vs. Time</p>
+                    <h3>🌱 Sugarcane Growth Monitoring</h3>
+<p>Plant height growth over time</p>
                 </div>
                 <span class="sg-badge">Growth</span>
             </div>
@@ -96,13 +96,11 @@
                 </div>
             </div>
 
-            <div class="sg-rate-chart">
-                <canvas id="sgRateChart"></canvas>
-                <div class="sg-rate-center">
-                    <strong>1.8</strong>
-                    <span>cm/day</span>
-                </div>
-            </div>
+        
+                   <div class="sg-chart-area">
+    <canvas id="sgRateChart"></canvas>
+</div>
+                    
 
             <p class="sg-rate-note">Average growth per day</p>
         </article>
@@ -126,31 +124,25 @@
                         <th>Field Name</th>
                         <th>Location</th>
                         <th>Area (ha)</th>
-                        <th>Status</th>
+                        <th>Soil Type</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>F001</td>
-                        <td>Field A</td>
-                        <td>Farm Area A</td>
-                        <td>2.5</td>
-                        <td><span class="sg-status-pill">Active</span></td>
-                    </tr>
-                    <tr>
-                        <td>F002</td>
-                        <td>Field B</td>
-                        <td>Farm Area B</td>
-                        <td>1.8</td>
-                        <td><span class="sg-status-pill">Active</span></td>
-                    </tr>
-                    <tr>
-                        <td>F003</td>
-                        <td>Field C</td>
-                        <td>Farm Area C</td>
-                        <td>3.0</td>
-                        <td><span class="sg-warning-pill">Monitoring</span></td>
-                    </tr>
+    {% for field in fields %}
+    <tr>
+        <td>F{{ field.field_id|stringformat:"03d" }}</td>
+        <td>{{ field.field_name }}</td>
+        <td>{{ field.location }}</td>
+        <td>{{ field.area_hectares }}</td>
+        <td>{{ field.soil_type|default:"Not specified" }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">No field records found.</td>
+    </tr>
+    {% endfor %}
+  
+                    
                 </tbody>
             </table>
         </div>
@@ -176,25 +168,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>V001</td>
-                        <td>Variety A</td>
-                        <td>Registered sugarcane variety</td>
-                        <td><span class="sg-status-pill">Active</span></td>
-                    </tr>
-                    <tr>
-                        <td>V002</td>
-                        <td>Variety B</td>
-                        <td>Registered sugarcane variety</td>
-                        <td><span class="sg-status-pill">Active</span></td>
-                    </tr>
-                    <tr>
-                        <td>V003</td>
-                        <td>Variety C</td>
-                        <td>Registered sugarcane variety</td>
-                        <td><span class="sg-status-pill">Active</span></td>
-                    </tr>
-                </tbody>
+    {% for item in varieties %}
+    <tr>
+        <td>V{{ forloop.counter|stringformat:"03d" }}</td>
+        <td>{{ item.variety }}</td>
+        <td>Registered sugarcane variety</td>
+        <td><span class="sg-status-pill">Active</span></td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="4">No variety records found.</td>
+    </tr>
+    {% endfor %}
+</tbody>
             </table>
         </div>
     </section>
@@ -216,36 +202,26 @@
                         <th>Variety</th>
                         <th>Field</th>
                         <th>Height (cm)</th>
-                        <th>Leaf Count</th>
+                        <th>Plant Weight (kg)</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Oct 28, 2026</td>
-                        <td>Variety A</td>
-                        <td>Field A</td>
-                        <td>78</td>
-                        <td>10</td>
-                        <td><span class="sg-status-pill">Healthy</span></td>
-                    </tr>
-                    <tr>
-                        <td>Oct 27, 2026</td>
-                        <td>Variety B</td>
-                        <td>Field B</td>
-                        <td>72</td>
-                        <td>9</td>
-                        <td><span class="sg-status-pill">Healthy</span></td>
-                    </tr>
-                    <tr>
-                        <td>Oct 26, 2026</td>
-                        <td>Variety C</td>
-                        <td>Field C</td>
-                        <td>65</td>
-                        <td>7</td>
-                        <td><span class="sg-warning-pill">Inspect</span></td>
-                    </tr>
-                </tbody>
+    {% for record in growth_records %}
+    <tr>
+        <td>{{ record.record_date|date:"M d, Y" }}</td>
+        <td>{{ record.variety|default:"Not specified" }}</td>
+        <td>{{ record.field_name|default:"Not specified" }}</td>
+        <td>{{ record.growth_height_cm|default:"-" }}</td>
+        <td>{{ record.plant_weight_kg|default:"-" }}</td>
+        <td><span class="sg-status-pill">Recorded</span></td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="6">No growth records found.</td>
+    </tr>
+    {% endfor %}
+</tbody>
             </table>
         </div>
     </section>
@@ -270,25 +246,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Field A</td>
-                        <td><span class="sg-status-pill">Good</span></td>
-                        <td>80%</td>
-                        <td>Continue monitoring</td>
-                    </tr>
-                    <tr>
-                        <td>Field B</td>
-                        <td><span class="sg-warning-pill">Needs checking</span></td>
-                        <td>55%</td>
-                        <td>Check water requirements</td>
-                    </tr>
-                    <tr>
-                        <td>Field C</td>
-                        <td><span class="sg-status-pill">Fair</span></td>
-                        <td>65%</td>
-                        <td>Monitor plant growth</td>
-                    </tr>
-                </tbody>
+    {% for field in fields %}
+    <tr>
+        <td>{{ field.field_name }}</td>
+        <td>Not yet assessed</td>
+        <td>Not available</td>
+        <td>Continue monitoring</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="4">No field records found.</td>
+    </tr>
+    {% endfor %}
+</tbody>
             </table>
         </div>
     </section>
@@ -314,28 +284,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Oct 28, 2026</td>
-                        <td>Field A</td>
-                        <td>Plant height measurement</td>
-                        <td>78 cm</td>
-                        <td><span class="sg-status-pill">Complete</span></td>
-                    </tr>
-                    <tr>
-                        <td>Oct 27, 2026</td>
-                        <td>Field B</td>
-                        <td>Growth inspection</td>
-                        <td>72 cm</td>
-                        <td><span class="sg-status-pill">Complete</span></td>
-                    </tr>
-                    <tr>
-                        <td>Oct 26, 2026</td>
-                        <td>Field C</td>
-                        <td>Field inspection</td>
-                        <td>Needs follow-up</td>
-                        <td><span class="sg-warning-pill">Pending</span></td>
-                    </tr>
-                </tbody>
+    {% for record in growth_records %}
+    <tr>
+        <td>{{ record.record_date|date:"M d, Y" }}</td>
+        <td>{{ record.field_name|default:"Not specified" }}</td>
+        <td>Growth measurement</td>
+        <td>
+            Height: {{ record.growth_height_cm|default:"-" }} cm
+        </td>
+        <td>
+            <span class="sg-status-pill">Recorded</span>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">No monitoring records found.</td>
+    </tr>
+    {% endfor %}
+</tbody>
             </table>
         </div>
     </section>
@@ -343,7 +309,172 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!--script src="{% static 'js/sugarcane-dashboard.js' %}"></script>
+{{ growth_trend|json_script:"growth-trend-data" }}
+{{ variety_growth|json_script:"variety-growth-data" }}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // GET DATA FROM DJANGO
+    
+const rawGrowthData = JSON.parse(
+    document.getElementById("growth-trend-data").textContent
+);
+
+console.log("Growth data from Django:", rawGrowthData);
+
+const growthData = Array.isArray(rawGrowthData)
+    ? rawGrowthData
+    : [];
+
+    
+const rawVarietyData = JSON.parse(
+    document.getElementById("variety-growth-data").textContent
+);
+
+console.log("Variety data from Django:", rawVarietyData);
+
+const varietyData = Array.isArray(rawVarietyData)
+    ? rawVarietyData
+    : [];
+
+
+
+
+console.log("ACTUAL GROWTH DATA:", growthData);
+
+if (!Array.isArray(growthData)) {
+    console.error("Growth data is not an array:", growthData);
+}
+
+
+    // CHART 1: GROWTH TREND
+    const growthCanvas = document.getElementById("sgGrowthChart");
+
+    new Chart(growthCanvas, {
+        type: "line",
+        data: {
+            labels: growthData.map(item => item[0]),
+            datasets: [{
+                label: "Average Height (cm)",
+                data: growthData.map(item => Number(item[1])),
+                
+borderColor: "#16a34a",
+backgroundColor: "rgba(22, 163, 74, 0.12)",
+borderWidth: 3,
+pointBackgroundColor: "#ffffff",
+pointBorderColor: "#16a34a",
+pointBorderWidth: 2,
+pointRadius: 5,
+pointHoverRadius: 7,
+fill: true,
+tension: 0.4
+
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "Height (cm)"
+                    }
+                }
+            }
+        }
+    });
+
+
+
+    // CHART 2: VARIETY COMPARISON
+    const varietyCanvas = document.getElementById("sgVarietyChart");
+
+    new Chart(varietyCanvas, {
+        type: "bar",
+        data: {
+            labels: varietyData.map(item => item[0]),
+            datasets: [{
+                label: "Average Height (cm)",
+                data: varietyData.map(item => Number(item[1])),
+                backgroundColor: "#76a96b"
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "Height (cm)"
+                    }
+                }
+            }
+        }
+    });
+
+    
+    // CHART 3: GROWTH RATE
+    const rateCanvas = document.getElementById("sgRateChart");
+
+    const rateLabels = [];
+    const rateValues = [];
+
+    for (let i = 1; i < growthData.length; i++) {
+        const previous = growthData[i - 1];
+        const current = growthData[i];
+
+        const previousDate = new Date(previous[0]);
+        const currentDate = new Date(current[0]);
+
+        const days = Math.max(
+            1,
+            Math.round((currentDate - previousDate) / 86400000)
+        );
+
+        const rate =
+            (Number(current[1]) - Number(previous[1])) / days;
+
+        rateLabels.push(current[0]);
+        rateValues.push(Number(rate.toFixed(2)));
+    }
+
+    new Chart(rateCanvas, {
+        type: "line",
+        data: {
+            labels: rateLabels,
+            datasets: [{
+                label: "Daily Growth (cm/day)",
+                data: rateValues,
+                borderColor: "#16a34a",
+                backgroundColor: "rgba(22, 163, 74, 0.15)",
+                borderWidth: 3,
+                pointRadius: 5,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "Growth (cm/day)"
+                    }
+                }
+            }
+        }
+    });
+
+});
+</script>
+
 
 {% endblock %}
-```

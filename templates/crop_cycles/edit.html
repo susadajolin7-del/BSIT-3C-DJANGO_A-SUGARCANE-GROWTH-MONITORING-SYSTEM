@@ -1,0 +1,225 @@
+
+{% extends "theme/base.html" %}
+
+{% block content %}
+
+<style>
+    .sg-crop-edit {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .sg-crop-edit .form-description {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    .sg-crop-edit .form-group {
+        margin-bottom: 20px;
+    }
+
+    .sg-crop-edit label {
+        display: block;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .sg-crop-edit input,
+    .sg-crop-edit select {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background: #fff;
+        color: #334155;
+        font-size: 14px;
+        box-sizing: border-box;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .sg-crop-edit input:focus,
+    .sg-crop-edit select:focus {
+        border-color: #15803d;
+        box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.12);
+    }
+
+    .sg-crop-edit .form-hint {
+        display: block;
+        margin-top: 6px;
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+    .sg-crop-edit .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .sg-crop-edit .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .sg-crop-edit .btn-save {
+        border: none;
+        border-radius: 8px;
+        padding: 12px 22px;
+        background: #15803d;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .sg-crop-edit .btn-save:hover {
+        background: #166534;
+    }
+
+    .sg-crop-edit .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 22px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        color: #475569;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .sg-crop-edit .btn-cancel:hover {
+        background: #f1f5f9;
+    }
+
+    @media (max-width: 600px) {
+        .sg-crop-edit .form-grid {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .sg-crop-edit .form-actions {
+            flex-direction: column;
+        }
+
+        .sg-crop-edit .form-actions a,
+        .sg-crop-edit .form-actions button {
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="sg-page-header">
+    <h1>Edit Crop Cycle</h1>
+    <p>Update sugarcane planting and harvest information.</p>
+</div>
+
+<div class="sg-card sg-crop-edit">
+
+    <h2>Crop Cycle Information</h2>
+
+    <p class="form-description">
+        Modify the crop cycle details below and save your changes.
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="field_id">Choose Sugarcane Field</label>
+
+            <select name="field_id" id="field_id" required>
+                {% for field in fields %}
+                <option value="{{ field.field_id }}"
+                    {% if field.field_id == crop.field_id %}selected{% endif %}>
+                    {{ field.field_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="variety">Sugarcane Variety</label>
+
+                <input
+                    type="text"
+                    name="variety"
+                    id="variety"
+                    value="{{ crop.variety|default:'' }}"
+                    placeholder="e.g. PSR 12"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="status">Crop Status</label>
+
+                <select name="status" id="status">
+                    <option value="Growing"
+                        {% if crop.status == 'Growing' %}selected{% endif %}>
+                        Growing
+                    </option>
+
+                    <option value="Harvested"
+                        {% if crop.status == 'Harvested' %}selected{% endif %}>
+                        Harvested
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="planting_date">Planting Date</label>
+
+                <input
+                    type="date"
+                    name="planting_date"
+                    id="planting_date"
+                    value="{{ crop.planting_date|date:'Y-m-d' }}"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="expected_harvest_date">Expected Harvest Date</label>
+
+                <input
+                    type="date"
+                    name="expected_harvest_date"
+                    id="expected_harvest_date"
+                    value="{{ crop.expected_harvest_date|date:'Y-m-d' }}"
+                >
+
+                <small class="form-hint">
+                    Update the estimated harvest date if necessary.
+                </small>
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+
+            <button type="submit" class="btn-save">
+                Save Changes
+            </button>
+
+            <a href="{% url 'crop_cycles' %}" class="btn-cancel">
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}

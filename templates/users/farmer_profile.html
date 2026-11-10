@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5ee;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .profile-container {
+            max-width: 650px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #276738;
+        }
+
+        .profile-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #276738;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #276738;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="profile-container">
+        <h1>My Profile</h1>
+
+        <div class="profile-item">
+            <span class="label">First Name:</span>
+            {{ farmer.first_name }}
+        </div>
+
+        <div class="profile-item">
+            <span class="label">Last Name:</span>
+            {{ farmer.last_name }}
+        </div>
+
+        <div class="profile-item">
+            <span class="label">Phone Number:</span>
+            {{ farmer.phone }}
+        </div>
+
+        <div class="profile-item">
+            <span class="label">Address:</span>
+            {{ farmer.address }}
+        </div>
+
+        <div class="profile-item">
+            <span class="label">Username:</span>
+            {{ request.user.username }}
+        </div>
+
+        <a href="{% url 'users:farmer_dashboard' %}">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+</body>
+</html>

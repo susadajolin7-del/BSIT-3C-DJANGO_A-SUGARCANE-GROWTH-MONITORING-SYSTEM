@@ -2,45 +2,337 @@
 {% extends "theme/base.html" %}
 
 {% block content %}
+
+<style>
+    .sg-growth-page {
+        width: 100%;
+    }
+
+    .sg-growth-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .sg-growth-toolbar h2 {
+        margin: 0;
+        color: #1e293b;
+    }
+
+    .sg-growth-add {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 11px 18px;
+        background: #15803d;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .sg-growth-add:hover {
+        background: #166534;
+        color: white;
+    }
+
+    .sg-growth-search {
+        position: relative;
+        margin-bottom: 20px;
+        max-width: 380px;
+    }
+
+    .sg-growth-search input {
+        width: 100%;
+        padding: 12px 15px 12px 40px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 14px;
+        box-sizing: border-box;
+        outline: none;
+    }
+
+    .sg-growth-search input:focus {
+        border-color: #15803d;
+        box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.12);
+    }
+
+    .sg-growth-search span {
+        position: absolute;
+        left: 14px;
+        top: 11px;
+        color: #94a3b8;
+        pointer-events: none;
+    }
+
+    .sg-growth-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .sg-growth-table {
+        width: 100%;
+        min-width: 1000px;
+        border-collapse: collapse;
+    }
+
+    .sg-growth-table th {
+        padding: 14px 12px;
+        background: #f0fdf4;
+        color: #166534;
+        font-size: 13px;
+        font-weight: 700;
+        text-align: left;
+        border-bottom: 1px solid #dcfce7;
+        white-space: nowrap;
+    }
+
+    .sg-growth-table td {
+        padding: 14px 12px;
+        color: #475569;
+        font-size: 13px;
+        border-bottom: 1px solid #e2e8f0;
+        vertical-align: middle;
+    }
+
+    .sg-growth-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .sg-growth-id {
+        color: #15803d;
+        font-weight: 700;
+    }
+
+    .sg-growth-measurement {
+        font-weight: 600;
+        color: #334155;
+        white-space: nowrap;
+    }
+
+    .sg-growth-notes {
+        min-width: 150px;
+        max-width: 250px;
+        white-space: normal;
+        line-height: 1.5;
+    }
+
+    .sg-growth-actions {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        white-space: nowrap;
+    }
+
+    .sg-growth-edit,
+    .sg-growth-delete {
+        padding: 7px 11px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .sg-growth-edit {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+    }
+
+    .sg-growth-edit:hover {
+        background: #dbeafe;
+    }
+
+    .sg-growth-delete {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
+
+    .sg-growth-delete:hover {
+        background: #fee2e2;
+    }
+
+    .sg-growth-empty {
+        padding: 35px 15px !important;
+        text-align: center;
+        color: #94a3b8 !important;
+    }
+
+    @media (max-width: 600px) {
+        .sg-growth-toolbar {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .sg-growth-add {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .sg-growth-search {
+            max-width: 100%;
+        }
+    }
+</style>
+
 <div class="sg-page-header">
     <h1>Growth Records</h1>
     <p>Monitor sugarcane growth measurements and observations.</p>
 </div>
 
-<div class="sg-card">
-    <h2>Growth Records List</h2>
+<div class="sg-card sg-growth-page">
 
-    <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse;">
+    <div class="sg-growth-toolbar">
+        <div>
+            <h2>Growth Records List</h2>
+            <p style="color: #64748b; font-size: 13px; margin: 6px 0 0;">
+                Recorded sugarcane growth measurements
+            </p>
+        </div>
+
+        <a href="{% url 'growth_record_add' %}" class="sg-growth-add">
+            + Add Growth Record
+        </a>
+    </div>
+
+    <div class="sg-growth-search">
+        <span>⌕</span>
+        <input
+            type="text"
+            id="growthSearch"
+            placeholder="Search growth records..."
+            onkeyup="searchGrowthRecords()"
+        >
+    </div>
+
+    <div class="sg-growth-table-wrapper">
+        <table class="sg-growth-table">
             <thead>
                 <tr>
-                    <th style="padding: 12px; text-align: left;">Record ID</th>
-                    <th style="padding: 12px; text-align: left;">Crop ID</th>
-                    <th style="padding: 12px; text-align: left;">Record Date</th>
-                    <th style="padding: 12px; text-align: left;">Growth Height (cm)</th>
-                    <th style="padding: 12px; text-align: left;">Plant Weight (kg)</th>
-                    <th style="padding: 12px; text-align: left;">Notes</th>
+                    <th>Record ID</th>
+                    <th>Crop ID</th>
+                    <th>Record Date</th>
+                    <th>Growth Height (cm)</th>
+                    <th>Plant Weight (kg)</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
+
+            <tbody id="growthTableBody">
+
                 {% for record in growth_records %}
-                <tr>
-                    <td style="padding: 12px;">{{ record.record_id }}</td>
-                    <td style="padding: 12px;">{{ record.crop_id }}</td>
-                    <td style="padding: 12px;">{{ record.record_date|date:"M d, Y" }}</td>
-                    <td style="padding: 12px;">{{ record.growth_height_cm|default:"—" }}</td>
-                    <td style="padding: 12px;">{{ record.plant_weight_kg|default:"—" }}</td>
-                    <td style="padding: 12px;">{{ record.notes|default:"—" }}</td>
+                <tr class="growth-row">
+                    <td>
+                        <span class="sg-growth-id">
+                            #{{ record.record_id }}
+                        </span>
+                    </td>
+
+                    <td>{{ record.crop_id }}</td>
+
+                    <td>
+                        {{ record.record_date|date:"M d, Y" }}
+                    </td>
+
+                    <td>
+                        <span class="sg-growth-measurement">
+                            {{ record.growth_height_cm|default:"—" }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="sg-growth-measurement">
+                            {{ record.plant_weight_kg|default:"—" }}
+                        </span>
+                    </td>
+
+                    <td class="sg-growth-notes">
+                        {{ record.notes|default:"—" }}
+                    </td>
+
+                    <td>
+                        <div class="sg-growth-actions">
+
+                            <a
+                                href="{% url 'growth_record_edit' record.record_id %}"
+                                class="sg-growth-edit"
+                            >
+                                Edit
+                            </a>
+
+                            <form
+                                method="POST"
+                                action="{% url 'growth_record_delete' record.record_id %}"
+                                onsubmit="return confirm('Are you sure you want to delete this growth record?');"
+                                style="display: inline;"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="sg-growth-delete"
+                                >
+                                    Delete
+                                </button>
+                            </form>
+
+                        </div>
+                    </td>
                 </tr>
+
                 {% empty %}
                 <tr>
-                    <td colspan="6" style="padding: 12px; text-align: center;">
+                    <td colspan="7" class="sg-growth-empty">
                         No growth records found.
                     </td>
                 </tr>
                 {% endfor %}
+
+                <tr id="growthNoResults" style="display: none;">
+                    <td colspan="7" class="sg-growth-empty">
+                        No matching growth records found.
+                    </td>
+                </tr>
+
             </tbody>
         </table>
     </div>
+
+    <p style="color: #94a3b8; font-size: 12px; margin-top: 15px;">
+        Total Growth Records: {{ growth_records|length }}
+    </p>
+
 </div>
+
+<script>
+    function searchGrowthRecords() {
+        const input = document.getElementById("growthSearch");
+        const filter = input.value.toLowerCase();
+        const rows = document.querySelectorAll(".growth-row");
+        const noResults = document.getElementById("growthNoResults");
+
+        let visibleCount = 0;
+
+        rows.forEach(function(row) {
+            const text = row.textContent.toLowerCase();
+
+            if (text.includes(filter)) {
+                row.style.display = "";
+                visibleCount++;
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        noResults.style.display = visibleCount === 0 ? "" : "none";
+    }
+</script>
+
 {% endblock %}

@@ -1,0 +1,212 @@
+
+{% extends "theme/base.html" %}
+
+{% block content %}
+
+<style>
+    .sg-crop-form {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .sg-crop-form .form-description {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    .sg-crop-form .form-group {
+        margin-bottom: 20px;
+    }
+
+    .sg-crop-form label {
+        display: block;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .sg-crop-form input,
+    .sg-crop-form select {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background: #fff;
+        color: #334155;
+        font-size: 14px;
+        box-sizing: border-box;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .sg-crop-form input:focus,
+    .sg-crop-form select:focus {
+        border-color: #15803d;
+        box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.12);
+    }
+
+    .sg-crop-form .form-hint {
+        display: block;
+        margin-top: 6px;
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+    .sg-crop-form .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .sg-crop-form .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .sg-crop-form .btn-save {
+        border: none;
+        border-radius: 8px;
+        padding: 12px 22px;
+        background: #15803d;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .sg-crop-form .btn-save:hover {
+        background: #166534;
+    }
+
+    .sg-crop-form .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 22px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        color: #475569;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .sg-crop-form .btn-cancel:hover {
+        background: #f1f5f9;
+    }
+
+    @media (max-width: 600px) {
+        .sg-crop-form .form-grid {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .sg-crop-form .form-actions {
+            flex-direction: column;
+        }
+
+        .sg-crop-form .form-actions a,
+        .sg-crop-form .form-actions button {
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="sg-page-header">
+    <h1>Add Crop Cycle</h1>
+    <p>Register and monitor a new sugarcane planting cycle.</p>
+</div>
+
+<div class="sg-card sg-crop-form">
+
+    <h2>Crop Cycle Information</h2>
+    <p class="form-description">
+        Enter the planting details and harvest schedule for your sugarcane field.
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="field_id">Choose Sugarcane Field</label>
+            <select name="field_id" id="field_id" required>
+                <option value="">-- Select Field --</option>
+                {% for field in fields %}
+                    <option value="{{ field.field_id }}">
+                        {{ field.field_name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <small class="form-hint">
+                Select the field where the sugarcane will be planted.
+            </small>
+        </div>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="variety">Sugarcane Variety</label>
+                <input
+                    type="text"
+                    name="variety"
+                    id="variety"
+                    placeholder="e.g. PSR 12"
+                >
+                <small class="form-hint">
+                    Enter the registered sugarcane variety.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="status">Crop Status</label>
+                <select name="status" id="status">
+                    <option value="Growing">Growing</option>
+                    <option value="Harvested">Harvested</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="planting_date">Planting Date</label>
+                <input
+                    type="date"
+                    name="planting_date"
+                    id="planting_date"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="expected_harvest_date">Expected Harvest Date</label>
+                <input
+                    type="date"
+                    name="expected_harvest_date"
+                    id="expected_harvest_date"
+                >
+                <small class="form-hint">
+                    Enter the estimated date of harvest, if available.
+                </small>
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-save">
+                Save Crop Cycle
+            </button>
+
+            <a href="{% url 'crop_cycles' %}" class="btn-cancel">
+                Cancel
+            </a>
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}

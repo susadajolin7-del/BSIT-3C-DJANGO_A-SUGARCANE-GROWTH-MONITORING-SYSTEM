@@ -2,44 +2,389 @@
 {% extends "theme/base.html" %}
 
 {% block content %}
-<div class="sg-page-header">
-    <h1>Farmers</h1>
-    <p>Manage and view registered sugarcane farmers.</p>
-</div>
 
-<div class="sg-card">
-    <h2>Farmers List</h2>
+<div class="farmers-page">
 
-    <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr>
-                    <th style="padding: 12px; text-align: left;">Farmer ID</th>
-                    <th style="padding: 12px; text-align: left;">First Name</th>
-                    <th style="padding: 12px; text-align: left;">Last Name</th>
-                    <th style="padding: 12px; text-align: left;">Phone</th>
-                    <th style="padding: 12px; text-align: left;">Address</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for farmer in farmers %}
-                <tr>
-                    <td style="padding: 12px;">{{ farmer.farmer_id }}</td>
-                    <td style="padding: 12px;">{{ farmer.first_name }}</td>
-                    <td style="padding: 12px;">{{ farmer.last_name }}</td>
-                    <td style="padding: 12px;">{{ farmer.phone|default:"—" }}</td>
-                    <td style="padding: 12px;">{{ farmer.address|default:"—" }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" style="padding: 12px; text-align: center;">
-                        No farmer records found.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <!-- PAGE HEADER -->
+<div class="farmers-header">
+    <div>
+        <h1>Farmers Management</h1>
+        <p>Manage and monitor registered sugarcane farmers.</p>
     </div>
+
+    <a href="{% url 'farmer_add' %}" class="add-farmer-btn">
+        + Add Farmer
+    </a>
 </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="farmers-summary">
+
+        <div class="summary-card">
+            <div class="summary-icon">👨‍🌾</div>
+            <div>
+                <p>Total Farmers</p>
+                <h2>{{ farmers|length }}</h2>
+                <span>Registered farmers</span>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-icon">🌱</div>
+            <div>
+                <p>Farmer Records</p>
+                <h2>{{ farmers|length }}</h2>
+                <span>Available records</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FARMERS TABLE -->
+    <div class="farmers-card">
+
+        <div class="farmers-card-header">
+            <div>
+                <h2>Farmers List</h2>
+                <p>Complete list of registered farmers</p>
+            </div>
+            <span class="record-count">
+                {{ farmers|length }} Records
+            </span>
+        </div>
+
+        <div class="farmers-toolbar">
+            <div class="search-box">
+                <span>🔍</span>
+                <input
+                    type="text"
+                    id="farmerSearch"
+                    placeholder="Search farmer name, phone, or address..."
+                >
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="farmers-table" id="farmersTable">
+
+                <thead>
+                    <tr>
+                        <th>FARMER ID</th>
+                        <th>FIRST NAME</th>
+                        <th>LAST NAME</th>
+                        <th>PHONE NUMBER</th>
+                        <th>ADDRESS</th>
+                        <th>STATUS</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+
+<tbody>
+    {% for farmer in farmers %}
+    <tr>
+        <td>
+            <span class="farmer-id">
+                #{{ farmer.farmer_id }}
+            </span>
+        </td>
+
+        <td>{{ farmer.first_name }}</td>
+        <td>{{ farmer.last_name }}</td>
+        <td>{{ farmer.phone|default:"—" }}</td>
+        <td>{{ farmer.address|default:"—" }}</td>
+
+        <td>
+            <span class="status-badge">Registered</span>
+        </td>
+
+        <td>
+    <a href="{% url 'farmer_edit' farmer.farmer_id %}"
+       style="background:#e8f5e9; color:#198754; padding:7px 12px; border-radius:6px; text-decoration:none;">
+        Edit
+    </a>
+
+    <form method="POST"
+          action="{% url 'farmer_delete' farmer.farmer_id %}"
+          style="display:inline;"
+          onsubmit="return confirm('Are you sure you want to delete this farmer?');">
+        {% csrf_token %}
+        <button type="submit"
+                style="background:#fee2e2; color:#b91c1c; padding:7px 12px; border:0; border-radius:6px; cursor:pointer; margin-left:5px;">
+            Delete
+        </button>
+    </form>
+</td>
+    </tr>
+
+    {% empty %}
+    <tr>
+        <td colspan="7" class="empty-message">
+            No farmer records found.
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+
+            </table>
+        </div>
+
+        <div class="farmers-footer">
+            <span>Showing {{ farmers|length }} farmer records</span>
+            <span>Sugarcane Growth Monitoring System</span>
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+.farmers-page {
+    padding: 10px 5px 30px;
+    color: #263b2d;
+}
+
+.farmers-header {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.add-farmer-btn {
+    background: #198754;
+    color: white;
+    padding: 11px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.add-farmer-btn:hover {
+    background: #146c43;
+    color: white;
+}
+
+.farmers-header h1 {
+    font-size: 27px;
+    color: #185c32;
+    margin: 0 0 7px;
+    font-weight: 700;
+}
+
+.farmers-header p {
+    color: #78877b;
+    margin: 0;
+    font-size: 14px;
+}
+
+.farmers-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.summary-card {
+    background: #fff;
+    padding: 22px;
+    border-radius: 13px;
+    border: 1px solid #e7eee7;
+    box-shadow: 0 3px 12px rgba(35, 75, 45, .05);
+    display: flex;
+    align-items: center;
+    gap: 17px;
+}
+
+.summary-icon {
+    width: 53px;
+    height: 53px;
+    background: #e8f5e9;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+}
+
+.summary-card p {
+    margin: 0 0 5px;
+    color: #718075;
+    font-size: 13px;
+}
+
+.summary-card h2 {
+    margin: 0;
+    font-size: 25px;
+    color: #185c32;
+}
+
+.summary-card span {
+    color: #91a096;
+    font-size: 12px;
+}
+
+.farmers-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #e7eee7;
+    box-shadow: 0 3px 12px rgba(35, 75, 45, .05);
+    overflow: hidden;
+}
+
+.farmers-card-header {
+    padding: 22px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #edf1ed;
+}
+
+.farmers-card-header h2 {
+    margin: 0 0 5px;
+    font-size: 19px;
+    color: #244b30;
+}
+
+.farmers-card-header p {
+    margin: 0;
+    color: #87948a;
+    font-size: 13px;
+}
+
+.record-count {
+    background: #e8f5e9;
+    color: #23733c;
+    padding: 8px 13px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.farmers-toolbar {
+    padding: 18px 24px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f8faf8;
+    border: 1px solid #e3eae3;
+    border-radius: 9px;
+    padding: 0 13px;
+    max-width: 430px;
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 12px 0;
+    width: 100%;
+    font-size: 13px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.farmers-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 750px;
+}
+
+.farmers-table thead {
+    background: #f1f7f1;
+}
+
+.farmers-table th {
+    padding: 15px 18px;
+    text-align: left;
+    font-size: 12px;
+    color: #ffffff !important;
+    background: #14532d;
+    letter-spacing: .5px;
+    white-space: nowrap;
+}
+
+.farmers-table td {
+    padding: 17px 18px;
+    border-bottom: 1px solid #edf1ed;
+    font-size: 13px;
+    color: #526256;
+}
+
+.farmers-table tbody tr:hover {
+    background: #f8fbf8;
+}
+
+.farmer-id {
+    color: #26733d;
+    font-weight: 700;
+}
+
+.status-badge {
+    background: #e5f5e9;
+    color: #26733d;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.empty-message {
+    text-align: center !important;
+    padding: 35px !important;
+    color: #89958c !important;
+}
+
+.farmers-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 17px 24px;
+    color: #8a978c;
+    font-size: 12px;
+}
+
+@media (max-width: 650px) {
+    .farmers-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .farmers-card-header {
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .farmers-footer {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("farmerSearch");
+    const tableRows = document.querySelectorAll(
+        "#farmersTable tbody tr"
+    );
+
+    searchInput.addEventListener("input", function () {
+        const searchValue = this.value.toLowerCase();
+
+        tableRows.forEach(function (row) {
+            row.style.display =
+                row.innerText.toLowerCase().includes(searchValue)
+                ? ""
+                : "none";
+        });
+    });
+});
+</script>
+
 {% endblock %}

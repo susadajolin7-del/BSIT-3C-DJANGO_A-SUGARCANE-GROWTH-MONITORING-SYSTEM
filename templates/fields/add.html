@@ -1,0 +1,356 @@
+
+{% extends "theme/base.html" %}
+
+{% block content %}
+
+<style>
+/* ===== ADD FIELD PAGE ===== */
+
+.sg-add-page {
+    padding: 5px 0 30px;
+}
+
+.sg-add-page * {
+    box-sizing: border-box;
+}
+
+.sg-add-header {
+    margin-bottom: 25px;
+}
+
+.sg-add-header h1 {
+    color: #14532d;
+    font-size: 29px;
+    font-weight: 750;
+    margin: 0 0 8px;
+}
+
+.sg-add-header p {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* FORM CARD */
+
+.sg-add-card {
+    background: #ffffff;
+    border: 1px solid #e2eee5;
+    border-radius: 15px;
+    padding: 28px;
+    max-width: 850px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.035);
+}
+
+.sg-add-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #edf0f2;
+}
+
+.sg-add-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: #dcfce7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+}
+
+.sg-add-card-heading h2 {
+    color: #14532d;
+    font-size: 21px;
+    margin: 0 0 5px;
+}
+
+.sg-add-card-heading p {
+    color: #64748b;
+    font-size: 13px;
+    margin: 0;
+}
+
+/* FORM INPUTS */
+
+.sg-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.sg-form-group {
+    margin-bottom: 5px;
+}
+
+.sg-form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.sg-form-group label {
+    display: block;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 650;
+    margin-bottom: 9px;
+}
+
+.sg-required {
+    color: #dc2626;
+}
+
+.sg-form-group input,
+.sg-form-group select {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #dce5df;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #334155;
+    font-size: 14px;
+    outline: none;
+    transition: 0.2s;
+}
+
+.sg-form-group input:focus,
+.sg-form-group select:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22,163,74,0.10);
+}
+
+.sg-form-group input::placeholder {
+    color: #a0aab5;
+}
+
+.sg-form-help {
+    display: block;
+    color: #94a3b8;
+    font-size: 11px;
+    margin-top: 7px;
+}
+
+/* FORM BUTTONS */
+
+.sg-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 30px;
+    padding-top: 22px;
+    border-top: 1px solid #edf0f2;
+}
+
+.sg-save-btn,
+.sg-cancel-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 12px 21px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none !important;
+    transition: 0.2s;
+}
+
+.sg-save-btn {
+    background: #15803d;
+    color: white;
+    border: none;
+}
+
+.sg-save-btn:hover {
+    background: #166534;
+}
+
+.sg-cancel-btn {
+    background: #f1f5f9;
+    color: #475569 !important;
+    border: 1px solid #e2e8f0;
+}
+
+.sg-cancel-btn:hover {
+    background: #e2e8f0;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+    .sg-add-card {
+        padding: 18px;
+    }
+
+    .sg-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sg-form-group.full-width {
+        grid-column: auto;
+    }
+
+    .sg-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .sg-save-btn,
+    .sg-cancel-btn {
+        width: 100%;
+    }
+
+    .sg-add-header h1 {
+        font-size: 24px;
+    }
+}
+</style>
+
+
+<div class="sg-add-page">
+
+    <!-- PAGE HEADER -->
+    <div class="sg-add-header">
+        <h1>🌱 Add Sugarcane Field</h1>
+        <p>Register a new agricultural field in your sugarcane monitoring system.</p>
+    </div>
+
+
+    <!-- FORM CARD -->
+    <div class="sg-add-card">
+
+        <div class="sg-add-card-heading">
+            <div class="sg-add-icon">📋</div>
+
+            <div>
+                <h2>Field Information</h2>
+                <p>Enter the required information below to register a field.</p>
+            </div>
+        </div>
+
+
+        <!-- ADD FIELD FORM -->
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="sg-form-grid">
+
+                <!-- FARMER ID -->
+                <div class="sg-form-group">
+                    <label for="farmer_id">
+                        Farmer ID <span class="sg-required">*</span>
+                    </label>
+
+                    <input
+                        type="number"
+                        id="farmer_id"
+                        name="farmer_id"
+                        placeholder="Enter farmer ID"
+                        min="1"
+                        required
+                    >
+
+                    <span class="sg-form-help">
+                        Enter the ID of the farmer managing this field.
+                    </span>
+                </div>
+
+
+                <!-- FIELD NAME -->
+                <div class="sg-form-group">
+                    <label for="field_name">
+                        Field Name <span class="sg-required">*</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="field_name"
+                        name="field_name"
+                        placeholder="e.g. North Field"
+                        required
+                    >
+
+                    <span class="sg-form-help">
+                        Enter the registered name of the sugarcane field.
+                    </span>
+                </div>
+
+
+                <!-- LOCATION -->
+                <div class="sg-form-group full-width">
+                    <label for="location">Field Location</label>
+
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        placeholder="e.g. Iloilo City"
+                    >
+
+                    <span class="sg-form-help">
+                        Specify the city, municipality, or barangay.
+                    </span>
+                </div>
+
+
+                <!-- AREA -->
+                <div class="sg-form-group">
+                    <label for="area_hectares">Area (Hectares)</label>
+
+                    <input
+                        type="number"
+                        id="area_hectares"
+                        name="area_hectares"
+                        step="0.01"
+                        min="0"
+                        placeholder="e.g. 2.50"
+                    >
+
+                    <span class="sg-form-help">
+                        Enter the total field area in hectares.
+                    </span>
+                </div>
+
+
+                <!-- SOIL TYPE -->
+                <div class="sg-form-group">
+                    <label for="soil_type">Soil Type</label>
+
+                    <input
+                        type="text"
+                        id="soil_type"
+                        name="soil_type"
+                        placeholder="e.g. Clay Loam"
+                    >
+
+                    <span class="sg-form-help">
+                        Specify the soil classification of the field.
+                    </span>
+                </div>
+
+            </div>
+
+
+            <!-- FORM BUTTONS -->
+            <div class="sg-form-actions">
+
+                <a href="{% url 'fields' %}" class="sg-cancel-btn">
+                    ✕ Cancel
+                </a>
+
+                <button type="submit" class="sg-save-btn">
+                    ✓ Save Field
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

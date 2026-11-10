@@ -2,60 +2,139 @@
 {% block content %}
 <div class="container-xl">
 
- <!-- BEGIN PAGE HEADER -->
+ 
+        <!-- BEGIN PAGE HEADER -->
 <div class="page-header d-print-none" aria-label="Page header">
-  <div class="container-xl">
+    <div class="container-xl">
 
-    <div class="row align-items-center">
+        <div class="row align-items-center">
 
-      <!-- LEFT -->
-      <div class="col">
+            <!-- LEFT -->
+            <div class="col">
+                <div class="page-pretitle">Overview</div>
 
-        <div class="page-pretitle">Overview</div>
+                <div class="d-flex align-items-center gap-3 flex-wrap d-none d-md-flex">
+                    <h1 class="page-title mb-0">User Management</h1>
+                </div>
 
-        <!-- TITLE + SEARCH (DESKTOP ONLY) -->
-        <div class="d-flex align-items-center gap-3 flex-wrap d-none d-md-flex">
-          <h2 class="page-title mb-0">User Management</h2>
+                <!-- MOBILE TITLE -->
+                <h2 class="page-title mb-0 d-md-none">User Management</h2>
+
+                <div class="text-muted mt-1">
+                    Manage system users, accounts, and access roles.
+                </div>
+            </div>
+
+            <!-- RIGHT: ADD USER -->
+            <div class="col-auto">
+                <div class="btn-list">
+                    <button type="button"
+                            class="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editUserModal"
+                            data-mode="create">
+                        <i class="ti ti-plus me-1"></i>
+                        Add New User
+                    </button>
+                </div>
+            </div>
+
         </div>
-
-        <!-- TITLE ONLY (MOBILE) -->
-        <h2 class="page-title mb-0 d-md-none">User Management</h2>
-
-      </div>
-
-        <!-- RIGHT -->
-        <!-- <div class="col-auto">
-        <div class="btn-list">
-          <button type="button"
-             class="btn btn-primary"
-             data-bs-toggle="modal"
-             data-bs-target="#editUserModal"
-             data-mode="create">
-            <i class="ti ti-plus me-1"></i> Add User
-          </button>
-        </div>
-      </div> -->
 
     </div>
-  </div>
 </div>
 <br>
 
-<!-- SEARCH BAR -->
-<form method="GET" class="mb-3">
-    <div class="input-group" style="max-width: 400px;">
-        <span class="input-group-text"><i class="ti ti-search"></i></span>
-        <input type="text"
-               name="q"
-               value="{{ query }}"
-               class="form-control"
-               placeholder="Search by name, username, or email...">
-        {% if query %}
-        <a href="{% url 'users:user_list' %}" class="btn btn-outline-secondary">Clear</a>
-        {% endif %}
-        <button type="submit" class="btn btn-primary">Search</button>
+
+<!-- USER STATISTICS CARDS -->
+<div class="row row-cards mb-4">
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-sm">
+            <div class="card-body">
+                <div class="subheader">Total Users</div>
+                <div class="h1 mb-0">{{ total_users }}</div>
+                <div class="text-muted small">Registered accounts</div>
+            </div>
+        </div>
     </div>
-</form>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-sm">
+            <div class="card-body">
+                <div class="subheader">Active Users</div>
+                <div class="h1 mb-0 text-success">{{ active_users }}</div>
+                <div class="text-muted small">Active accounts</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-sm">
+            <div class="card-body">
+                <div class="subheader">Inactive Users</div>
+                <div class="h1 mb-0 text-danger">{{ inactive_users }}</div>
+                <div class="text-muted small">Inactive accounts</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card card-sm">
+            <div class="card-body">
+                <div class="subheader">Staff Accounts</div>
+                <div class="h1 mb-0 text-warning">{{ staff_users }}</div>
+                <div class="text-muted small">Staff members</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- SEARCH BAR -->
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="GET">
+            <div class="row g-2 align-items-center">
+
+                <div class="col">
+                    <div class="input-icon">
+                        <span class="input-icon-addon">
+                            <i class="ti ti-search"></i>
+                        </span>
+
+                        <input type="text"
+                               name="q"
+                               value="{{ query }}"
+                               class="form-control"
+                               placeholder="Search by name, username, or email...">
+                    </div>
+                </div>
+
+                <div class="col-auto">
+                    <button type="submit"
+                            class="btn btn-success">
+                        <i class="ti ti-search me-1"></i>
+                        Search
+                    </button>
+                </div>
+
+                {% if query %}
+                <div class="col-auto">
+                    <a href="{% url 'users:user_list' %}"
+                       class="btn btn-outline-secondary">
+                        <i class="ti ti-x me-1"></i>
+                        Clear
+                    </a>
+                </div>
+                {% endif %}
+
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <div id="userAlert" class="alert alert-info alert-dismissible fade {% if not messages %}d-none{% endif %}{% if messages %}show{% endif %}" role="alert">
     <i class="fas fa-circle-check alert-icon" aria-hidden="true"></i>
@@ -70,16 +149,19 @@
 
     <div class="card">
         <div class="card-header">
-            <div class="card-title">
-                All Users
-                {% if query %}
-                <span class="text-muted fw-normal">— search results for "{{ query }}"</span>
-                {% endif %}
-            </div>
+            <div class="card-title" style="color: #166534; font-size: 18px; font-weight: 700;">
+    👥 All Users
+    {% if query %}
+    <span class="text-muted fw-normal">
+        — search results for "{{ query }}"
+    </span>
+    {% endif %}
+</div>
         </div>
-        <div class="table-responsive">
-            <table class="table table-vcenter table-hover card-table text-nowrap" id="usersTable">
-                <thead>
+        <div class="table-responsive"
+     style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table class="table table-vcenter table-hover card-table text-nowrap table-bordered align-middle" id="usersTable" style="border-color: #dcfce7;">
+                <thead style="background-color: #dcfce7; color: #166534;">
                     <tr>
                         <th>#</th>
                         <th>Name</th>
@@ -96,62 +178,99 @@
                     <tr data-row-id="{{ u.id }}">
                         <td class="text-muted">{{ u.id }}</td>
                         <td>
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="avatar avatar-sm bg-blue-lt">
-                                    {{ u.first_name|first|upper }}{{ u.last_name|first|upper }}
-                                </span>
-                                <div>
-                                    <div class="fw-medium">{{ u.first_name }} {{ u.last_name }}</div>
-                                </div>
-                            </div>
-                        </td>
+    <div class="d-flex align-items-center gap-3">
+
+        <span class="avatar avatar-md rounded-circle"
+              style="background-color: #dcfce7; color: #166534; font-weight: 700;">
+            {% if u.first_name or u.last_name %}
+                {{ u.first_name|first|upper }}{{ u.last_name|first|upper }}
+            {% else %}
+                {{ u.username|first|upper }}
+            {% endif %}
+        </span>
+
+        <div>
+            <div class="fw-bold text-dark">
+                {% if u.first_name or u.last_name %}
+                    {{ u.first_name }} {{ u.last_name }}
+                {% else %}
+                    {{ u.username }}
+                {% endif %}
+            </div>
+            <div class="text-muted small">
+                User ID: {{ u.id }}
+            </div>
+        </div>
+
+    </div>
+</td>
                         <td class="text-muted">{{ u.username }}</td>
                         <td class="text-muted">{{ u.email }}</td>
                         <td class="text-muted">{{ u.date_joined|date:"M j, Y" }}</td>
                         <td>
-                            {% if u.is_active %}
-                            <span class="badge bg-success-lt text-success">Active</span>
-                            {% else %}
-                            <span class="badge bg-danger-lt text-danger">Inactive</span>
-                            {% endif %}
-                        </td>
+    {% if u.is_active %}
+        <span class="badge bg-success-lt text-success">
+            <i class="ti ti-circle-check me-1"></i> Active
+        </span>
+    {% else %}
+        <span class="badge bg-danger-lt text-danger">
+            <i class="ti ti-circle-x me-1"></i> Inactive
+        </span>
+    {% endif %}
+</td>
                         <td>
-                            {% if u.is_superuser %}
-                            <span class="badge bg-purple-lt text-purple">Superuser</span>
-                            {% elif u.is_staff %}
-                            <span class="badge bg-warning-lt text-warning">Staff</span>
-                            {% else %}
-                            <span class="badge bg-secondary-lt text-secondary">User</span>
-                            {% endif %}
-                        </td>
+    {% if u.is_superuser %}
+        <span class="badge bg-purple-lt text-purple">
+            <i class="ti ti-shield-check me-1"></i>
+            Superuser
+        </span>
+    {% elif u.is_staff %}
+        <span class="badge bg-warning-lt text-warning">
+            <i class="ti ti-user-star me-1"></i>
+            Staff
+        </span>
+    {% else %}
+        <span class="badge bg-secondary-lt text-secondary">
+            <i class="ti ti-user me-1"></i>
+            User
+        </span>
+    {% endif %}
+</td>
                         <td>
-                            <div class="d-flex gap-1">
-                                <a href="#"
-                                   class="btn btn-ghost-secondary btn-icon btn-sm"
-                                   data-bs-toggle="modal"
-                                   data-bs-target="#editUserModal"
-                                   data-mode="edit"
-                                   data-id="{{ u.id }}"
-                                   data-username="{{ u.username }}"
-                                   data-first="{{ u.first_name }}"
-                                   data-last="{{ u.last_name }}"
-                                   data-email="{{ u.email }}"
-                                   data-active="{{ u.is_active|yesno:'true,false' }}"
-                                   data-staff="{{ u.is_staff|yesno:'true,false' }}"
-                                   title="Edit">
-                                    <i class="ti ti-pencil text-primary"></i>
-                                </a>
-                                <a href="#"
-                                   class="btn btn-ghost-secondary btn-icon btn-sm"
-                                   data-bs-toggle="modal"
-                                   data-bs-target="#deleteUserModal"
-                                   data-id="{{ u.id }}"
-                                   data-name="{{ u.username }}"
-                                   title="Delete">
-                                    <i class="ti ti-trash text-danger"></i>
-                                </a>
-                            </div>
-                        </td>
+    <div class="d-flex align-items-center gap-2">
+
+        <!-- EDIT BUTTON -->
+        <a href="#"
+           class="btn btn-sm btn-outline-success"
+           data-bs-toggle="modal"
+           data-bs-target="#editUserModal"
+           data-mode="edit"
+           data-id="{{ u.id }}"
+           data-username="{{ u.username }}"
+           data-first="{{ u.first_name }}"
+           data-last="{{ u.last_name }}"
+           data-email="{{ u.email }}"
+           data-active="{{ u.is_active|yesno:'true,false' }}"
+           data-staff="{{ u.is_staff|yesno:'true,false' }}"
+           title="Edit User">
+            <i class="ti ti-edit me-1"></i>
+Edit
+        </a>
+
+        <!-- DELETE BUTTON -->
+        <a href="#"
+           class="btn btn-sm btn-outline-danger"
+           data-bs-toggle="modal"
+           data-bs-target="#deleteUserModal"
+           data-id="{{ u.id }}"
+           data-name="{{ u.username }}"
+           title="Delete User">
+            <i class="ti ti-trash me-1"></i>
+Delete
+        </a>
+
+    </div>
+</td>
                     </tr>
                     {% empty %}
                     <tr>

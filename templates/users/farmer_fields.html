@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Sugarcane Fields</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5ee;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #276738;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #276738;
+            color: white;
+        }
+
+        a {
+            color: #276738;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>My Sugarcane Fields</h1>
+        <p>View your registered sugarcane fields.</p>
+
+        <div class="card">
+            <h3>My Fields</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field ID</th>
+                        <th>Field Name</th>
+                        <th>Location</th>
+                        <th>Area (Hectares)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for field in fields %}
+                    <tr>
+                        <td>{{ field.field_id }}</td>
+                        <td>{{ field.field_name }}</td>
+                        <td>{{ field.location }}</td>
+                        <td>{{ field.area_hectares }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No sugarcane fields registered yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            <a href="{% url 'users:farmer_dashboard' %}">
+                ← Back to Dashboard
+            </a>
+        </p>
+
+    </div>
+</body>
+</html>

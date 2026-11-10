@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Crop Cycles</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5ee;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #276738;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #276738;
+            color: white;
+        }
+
+        a {
+            color: #276738;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>My Crop Cycles</h1>
+    <p>Monitor your sugarcane planting activities.</p>
+
+    <div class="card">
+        <h3>My Crop Records</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Crop ID</th>
+                    <th>Field ID</th>
+                    <th>Variety</th>
+                    <th>Planting Date</th>
+                    <th>Expected Harvest</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for crop in crops %}
+                <tr>
+                    <td>{{ crop.crop_id }}</td>
+                    <td>{{ crop.field_id }}</td>
+                    <td>{{ crop.variety }}</td>
+                    <td>{{ crop.planting_date }}</td>
+                    <td>{{ crop.expected_harvest_date|default:"Not set" }}</td>
+                    <td>{{ crop.status }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No crop cycles registered yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <p>
+        <a href="{% url 'users:farmer_dashboard' %}">
+            ← Back to Dashboard
+        </a>
+    </p>
+
+</div>
+
+</body>
+</html>
